@@ -91,7 +91,7 @@
         </div>
       </section>
 
-      <!-- 剧本大厅 -->
+      <!-- 剧本大厅 (已完整补回 TA的心愿 与 自由沙盒) -->
       <section v-show="currentStep === 'scripts'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar">
         <div class="flex items-center justify-between px-1">
           <button @click="currentStep = 'ongoing'" class="text-xs text-indigo-300 hover:underline flex items-center gap-1">
@@ -99,10 +99,49 @@
           </button>
         </div>
 
-        <div v-for="script in scripts" :key="script.id" class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 space-y-3">
-          <h2 class="text-base font-bold text-white">{{ script.title }}</h2>
-          <p class="text-xs text-slate-400 leading-relaxed">{{ script.description }}</p>
-          <button @click="selectScript(script)" class="w-full py-2.5 bg-slate-700 hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition">选择此剧本</button>
+        <!-- TA的心愿入口 -->
+        <div @click="openCharAuthoredModal" class="bg-gradient-to-r from-rose-950/50 via-purple-950/50 to-slate-900 border border-rose-500/40 hover:border-rose-400 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold uppercase">角色反向带跑</span>
+            <span class="text-[10px] text-rose-400 font-mono">基于人设与日常记忆执笔</span>
+          </div>
+          <h2 class="text-base font-bold text-white flex items-center gap-1.5">
+            <span>💌 TA的心愿 · 为你定制专属剧本</span>
+          </h2>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            由 Char 依据自身执念、人设背景或日常闲聊线索，反向为你设计一场探险！
+          </p>
+        </div>
+
+        <!-- 自由沙盒入口 -->
+        <div @click="openFreeModeDetail" class="bg-gradient-to-r from-purple-900/40 via-indigo-900/40 to-slate-900 border border-purple-500/40 hover:border-purple-400 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold uppercase">自由沙盒</span>
+            <span class="text-[10px] text-purple-400 font-mono">无剧情枷锁</span>
+          </div>
+          <h2 class="text-base font-bold text-white flex items-center gap-1.5">
+            <span>✨ 完全自由模式 (自定义开篇)</span>
+          </h2>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            由你输入任意开篇情境与行动，同伴全心跟随你的剧情自由互动。
+          </p>
+        </div>
+
+        <!-- 经典剧本列表 -->
+        <div class="space-y-3 pt-1">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-xs text-slate-400 font-semibold">📚 经典预设剧本库</span>
+            <span class="text-[11px] text-slate-500">共 {{ scripts.length }} 部</span>
+          </div>
+
+          <div v-for="script in scripts" :key="script.id" class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">{{ script.tag }}</span>
+            </div>
+            <h2 class="text-base font-bold text-white">{{ script.title }}</h2>
+            <p class="text-xs text-slate-400 leading-relaxed">{{ script.description }}</p>
+            <button @click="selectScript(script)" class="w-full py-2.5 bg-slate-700 hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition">选择此剧本</button>
+          </div>
         </div>
       </section>
 
@@ -110,7 +149,12 @@
       <section v-show="currentStep === 'ongoing'" class="h-full overflow-y-auto p-4 space-y-3 no-scrollbar">
         <div v-if="activeSessions.length === 0" class="text-center py-12 text-xs text-slate-400">当前没有正在进行的探险存档</div>
         <div v-for="sess in activeSessions" :key="sess.id" class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-3.5 space-y-2 text-xs">
-          <h3 class="font-bold text-white text-sm">{{ sess.title }}</h3>
+          <div class="flex items-center justify-between">
+            <span :class="sess.isFreeMode ? 'bg-purple-500/20 text-purple-300' : 'bg-indigo-500/20 text-indigo-300'" class="text-[10px] px-2 py-0.5 rounded-full font-medium">
+              {{ sess.isFreeMode ? '自由沙盒' : '经典剧本' }}
+            </span>
+            <span class="text-[10px] text-slate-400">{{ sess.title }}</span>
+          </div>
           <div class="flex gap-2 pt-1">
             <button @click="resumeSession(sess)" class="flex-1 py-2 bg-indigo-600 text-white rounded-xl">继续探险</button>
             <button @click="deleteSession(sess.id)" class="px-3 py-2 bg-slate-800 text-red-300 rounded-xl">删除</button>
@@ -118,32 +162,50 @@
         </div>
       </section>
 
-      <!-- 选人设配置 -->
+      <!-- 选人设配置 (自由沙盒支持自定开篇情境) -->
       <section v-show="currentStep === 'select_persona'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-3.5">
-          <h2 class="font-bold text-white text-sm">{{ selectedScript?.title || '自由沙盒世界' }}</h2>
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400">
+            {{ isFreeModeSelection ? '模式：自由沙盒' : '已选剧本' }}
+          </span>
+          <h2 class="font-bold text-white text-sm mt-0.5">{{ isFreeModeSelection ? '自定冒险舞台' : selectedScript?.title }}</h2>
+          <p v-if="!isFreeModeSelection" class="text-slate-400 mt-1">{{ selectedScript?.description }}</p>
         </div>
+
+        <div v-if="isFreeModeSelection" class="bg-slate-900/80 border border-purple-500/30 rounded-2xl p-3.5 space-y-2">
+          <label class="block font-semibold text-purple-300">起始剧情 / 舞台情境设定 (选填)</label>
+          <textarea v-model="freeModeCustomOpening" rows="2" placeholder="例如：深夜的画室突降暴雨、机甲驾驶舱内..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-white focus:outline-none"></textarea>
+        </div>
+
         <div class="space-y-2">
           <label class="block text-slate-400 font-semibold">👤 你的身份 (面具)</label>
           <div class="grid grid-cols-2 gap-2">
             <div v-for="up in userPersonaList" :key="up.id" @click="chosenUserPersonaId = up.id" :class="chosenUserPersonaId === up.id ? 'border-indigo-500 bg-indigo-950/50' : 'border-slate-700 bg-slate-800'" class="border rounded-xl p-2.5 cursor-pointer font-bold text-white">{{ up.name }}</div>
           </div>
         </div>
+
         <div class="space-y-2">
-          <label class="block text-slate-400 font-semibold">👥 同行同伴 (支持修罗场多选)</label>
+          <div class="flex items-center justify-between text-slate-400 font-semibold">
+            <span>👥 同行同伴 (支持修罗场多选)</span>
+            <span class="text-[10px] text-indigo-400">已选 {{ chosenPersonaIds.length }} 位</span>
+          </div>
           <div v-for="p in personaList" :key="p.id" @click="togglePersonaSelection(p.id)" :class="chosenPersonaIds.includes(p.id) ? 'border-indigo-500 bg-indigo-950/50' : 'border-slate-700 bg-slate-800'" class="border rounded-xl p-3 cursor-pointer flex justify-between items-center">
-            <span class="font-bold text-white">{{ p.name }}</span>
+            <div>
+              <span class="font-bold text-white">{{ p.name }}</span>
+              <span class="text-[10px] ml-2 text-slate-400">称呼你: {{ p.userNickname }}</span>
+            </div>
             <span>{{ chosenPersonaIds.includes(p.id) ? '✓' : '' }}</span>
           </div>
         </div>
+
         <button @click="confirmPersonaAndEnterGame" class="w-full py-3 bg-indigo-600 text-white rounded-2xl font-semibold shadow-lg">启程</button>
       </section>
 
-      <!-- 剧本推演区 (包含篇幅选择与上下文轮数) -->
+      <!-- 剧本推演区 (包含篇幅选择、选项按钮组、备忘录与流式渲染) -->
       <section v-show="currentStep === 'game'" class="h-full flex flex-col relative">
         <div class="bg-slate-800/95 px-3 py-1.5 border-b border-slate-700/60 flex items-center justify-between text-[11px] flex-wrap gap-1.5">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-amber-300 font-medium text-[10px]">第 1 幕</span>
+            <span class="text-amber-300 font-medium text-[10px]">{{ currentSession?.isFreeMode ? '自由推演' : '剧情推演' }}</span>
             <button @click="showStyleModal = true" class="px-2 py-0.5 bg-indigo-950/80 border border-indigo-500/40 text-indigo-300 rounded-md text-[10px]">
               <span>✍️ {{ getCurrentStyleName() }}</span>
             </button>
@@ -280,7 +342,7 @@
             </div>
           </div>
 
-          <!-- 流式推演占位符 -->
+          <!-- 打字机流式占位 -->
           <div v-if="isStreaming" class="p-3 bg-slate-800/80 border border-indigo-500/40 rounded-2xl space-y-2 text-xs">
             <div class="flex justify-between items-center text-indigo-300">
               <span class="animate-pulse">剧情推演中...</span>
@@ -299,13 +361,13 @@
             </button>
           </div>
 
-          <!-- 选项按钮组 -->
-          <div v-if="!currentSession?.isFreeMode && activeChoices.length > 0 && !isStreaming && !currentSession?.pendingAction" class="grid grid-cols-1 gap-1.5">
+          <!-- 推动剧情的 3 个选项按钮组 -->
+          <div v-if="activeChoices.length > 0 && !isStreaming && !currentSession?.pendingAction" class="grid grid-cols-1 gap-1.5">
             <button 
               v-for="(choice, cIdx) in activeChoices" :key="cIdx"
               :disabled="isActionLocked || isStreaming"
               @click="chooseOption(choice)"
-              class="text-left px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs text-amber-200 border border-slate-700">
+              class="text-left px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs text-amber-200 border border-slate-700 shadow-sm transition">
               {{ cIdx + 1 }}. {{ choice }}
             </button>
           </div>
@@ -326,7 +388,7 @@
         </footer>
       </section>
 
-      <!-- 日常聊天准备页 -->
+      <!-- 日常随聊准备页 -->
       <section v-show="currentStep === 'daily_setup'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar">
         <div class="bg-gradient-to-r from-purple-950/40 to-slate-900 border border-purple-500/30 rounded-2xl p-4 space-y-1">
           <h2 class="text-sm font-bold text-white flex items-center gap-1.5">💬 发起日常随聊</h2>
@@ -472,6 +534,7 @@
             </div>
           </div>
 
+          <!-- 编辑表单 -->
           <div id="persona-edit-form" class="bg-slate-900/80 p-4 border border-slate-800 rounded-2xl space-y-2.5">
             <div class="flex items-center justify-between">
               <h3 class="text-xs font-bold text-amber-400">{{ editingPersonaId ? `✏️ 正在编辑同伴：${personaForm.name}` : '➕ 新建同伴人设' }}</h3>
@@ -487,6 +550,7 @@
               <textarea v-model="personaForm.personaPrompt" rows="4" placeholder="在此粘贴长篇角色设定卡、背景经历、性格特征..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none leading-relaxed"></textarea>
             </div>
 
+            <!-- 生图绑定区：Seed 与 参考图垫图 -->
             <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-2 text-xs">
               <div class="font-semibold text-indigo-300">🎨 同伴专属生图参数</div>
               <div class="grid grid-cols-2 gap-2">
@@ -514,6 +578,7 @@
           </div>
         </div>
 
+        <!-- 身份面具管理 -->
         <div v-show="personaTab === 'user'" class="space-y-4">
           <div class="space-y-2">
             <div class="flex items-center justify-between text-xs text-slate-400 px-1 font-semibold">
@@ -554,7 +619,7 @@
         </div>
       </section>
 
-      <!-- 接口设置 (完整恢复模型拉取与多预设管理) -->
+      <!-- 接口设置 (多预设方案与模型拉取) -->
       <section v-show="currentStep === 'settings'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
         <!-- 文本模型配置 -->
         <div class="space-y-2.5 bg-slate-800/80 border border-slate-700 p-3.5 rounded-2xl">
@@ -628,6 +693,32 @@
       </section>
 
       <!-- 弹窗合集 -->
+      <!-- TA为你执笔起草剧本弹窗 -->
+      <div v-if="showCharAuthoredModal" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-rose-500/40 rounded-3xl p-4 w-full max-w-sm max-h-[90%] flex flex-col space-y-3 shadow-2xl overflow-y-auto no-scrollbar text-xs">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-rose-300 flex items-center gap-1">💌 TA执笔 · 专属反向带跑</h3>
+            <button @click="showCharAuthoredModal = false" class="text-slate-400 hover:text-white">关闭</button>
+          </div>
+          <p class="text-slate-300 leading-relaxed">选择一位同伴，TA将根据核心人设与你们的记忆，反向为你定制一场专属探险！</p>
+          <div class="space-y-1.5">
+            <label class="block font-semibold text-rose-300">1. 选择为你执笔带跑的同伴 (Char)</label>
+            <select v-model="authorCharId" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none">
+              <option v-for="p in personaList" :key="p.id" :value="p.id">{{ p.name }}（称呼你: {{ p.userNickname }}）</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label class="block font-semibold text-rose-300">2. 你的入局身份 (User Persona)</label>
+            <select v-model="authorUserPersonaId" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none">
+              <option v-for="up in userPersonaList" :key="up.id" :value="up.id">{{ up.name }}</option>
+            </select>
+          </div>
+          <button @click="generateAndLaunchCharAuthoredGame" :disabled="isGeneratingCharScript" class="w-full py-3 bg-gradient-to-r from-rose-600 to-purple-600 text-white rounded-2xl font-semibold shadow-lg">
+            <span>{{ isGeneratingCharScript ? '正在由 TA 构思世界观...' : '✨ 让 TA 为我执笔造梦' }}</span>
+          </button>
+        </div>
+      </div>
+
       <!-- 好感看板 -->
       <div v-if="showAffectionModal" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-indigo-500/40 rounded-3xl p-4 w-full max-w-sm max-h-[85%] flex flex-col space-y-3 shadow-2xl overflow-y-auto no-scrollbar text-xs">
@@ -678,8 +769,10 @@
       <div v-if="showSummaryModal" class="absolute inset-0 bg-black/70 backdrop-blur-sm z-30 flex flex-col justify-end">
         <div class="bg-slate-900 border-t border-slate-700 rounded-t-2xl p-4 max-h-[85%] flex flex-col space-y-3">
           <div class="flex justify-between items-center"><h3 class="text-sm font-bold text-amber-400">📝 冒险备忘录</h3><button @click="showSummaryModal = false" class="text-slate-400 text-xs">关闭</button></div>
-          <textarea v-if="currentSession" v-model="currentSession.storySummary" rows="6" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none"></textarea>
-          <button @click="generateAiSummary" :disabled="isSummarizing" class="w-full py-2.5 bg-amber-600 text-white rounded-xl text-xs font-medium">生成总结</button>
+          <textarea v-if="currentSession" v-model="currentSession.storySummary" rows="6" placeholder="点击下方一键总结提取线索与重要进展..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none"></textarea>
+          <button @click="generateAiSummary" :disabled="isSummarizing" class="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-medium shadow">
+            {{ isSummarizing ? '正在提炼线索中...' : '🤖 一键提取备忘要点' }}
+          </button>
         </div>
       </div>
 
@@ -750,6 +843,11 @@
         const showSummaryModal = ref(false);
         const showStyleModal = ref(false);
         const showImageModal = ref(false);
+        const showCharAuthoredModal = ref(false);
+        const isGeneratingCharScript = ref(false);
+        const authorCharId = ref('p_shen');
+        const authorUserPersonaId = ref('up_default');
+
         const previewImgUrl = ref('');
         const isSummarizing = ref(false);
         const isGeneratingImageNow = ref(false);
@@ -779,6 +877,8 @@
           }
         ]);
         const selectedScript = ref(scripts.value[0]);
+        const isFreeModeSelection = ref(false);
+        const freeModeCustomOpening = ref('');
 
         const activeSessions = ref(JSON.parse(localStorage.getItem('se_sessions')) || []);
         const currentSessionId = ref(localStorage.getItem('se_curr_sess_id') || null);
@@ -862,13 +962,16 @@
           return '返回';
         });
 
+        // 选项计算属性：自动从最后一条 engine 日志读取 choices 数组推动剧情
         const activeChoices = computed(() => {
           if (!currentSession.value?.gameLogs) return [];
           const logs = currentSession.value.gameLogs;
           for (let i = logs.length - 1; i >= 0; i--) {
-            if (logs[i].type === 'engine' && logs[i].choices?.length > 0) return logs[i].choices;
+            if (logs[i].type === 'engine' && Array.isArray(logs[i].choices) && logs[i].choices.length > 0) {
+              return logs[i].choices;
+            }
           }
-          return selectedScript.value?.nodes[0]?.choices || [];
+          return ["向前深入探查", "环顾周遭细微动静", "与身旁同伴交换对策"];
         });
 
         const streamingCleanText = computed(() => {
@@ -1118,8 +1221,71 @@
           startNewDailyChat();
         };
 
-        // 跑团与流式推演
-        const selectScript = script => { selectedScript.value = script; currentStep.value = 'select_persona'; };
+        // 剧本大厅功能：经典选择、自由模式、TA的心愿反向执笔
+        const selectScript = script => { isFreeModeSelection.value = false; selectedScript.value = script; currentStep.value = 'select_persona'; };
+        const openFreeModeDetail = () => { isFreeModeSelection.value = true; freeModeCustomOpening.value = ''; currentStep.value = 'select_persona'; };
+        const openCharAuthoredModal = () => { showCharAuthoredModal.value = true; if (personaList.value.length > 0) authorCharId.value = personaList.value[0].id; };
+
+        const generateAndLaunchCharAuthoredGame = async () => {
+          const key = cleanApiKey();
+          if (!key) { openSettings(); return; }
+          isGeneratingCharScript.value = true;
+          const author = personaList.value.find(p => p.id === authorCharId.value);
+          const userP = userPersonaList.value.find(u => u.id === authorUserPersonaId.value);
+
+          let dailyMemorySnippet = '彼此拥有深刻默契。';
+          const dailyChat = activeDailySessions.value.find(d => d.personaId === author.id);
+          if (dailyChat?.messages?.length > 0) {
+            dailyMemorySnippet = dailyChat.messages.slice(-6).map(m => `${m.role === 'user' ? userP.name : author.name}: ${m.text}`).join('\n');
+          }
+
+          const prompt = `你现在是同伴【${author.name}】（核心人设：${author.personaPrompt || author.traits}）。
+你依据自己的执念背景，为玩家【${userP.name}】筹备并设计一场专属的剧本探险。
+你们的近期记忆片段：${dailyMemorySnippet}。
+请输出且仅输出严格的 JSON 字符串，格式如下：
+{
+  "title": "剧本名称",
+  "description": "剧本简短故事背景",
+  "openingNarrative": "详细的开篇情境描写（约300字，第一视角引导玩家）",
+  "firstChoices": ["行动选项一", "行动选项二", "行动选项三"]
+}`;
+
+          try {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/chat/completions`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+              body: JSON.stringify({ model: settings.model, messages: [{ role: 'user', content: prompt }], temperature: 0.8 })
+            });
+            const data = await resp.json();
+            const res = JSON.parse(data.choices?.[0]?.message?.content?.replace(/```json/g, '').replace(/```/g, '').trim() || '{}');
+
+            const newSessId = 'sess_' + Date.now();
+            const newSession = {
+              id: newSessId, isFreeMode: false, isCharAuthored: true, authorCharId: author.id,
+              companionIds: [author.id], userPersonaId: userP.id, title: `💌 ${res.title || '专属心愿'} · ${author.name}`,
+              currentNodeIndex: 0, storySummary: `由【${author.name}】执笔：${res.description || ''}`,
+              selectedStyleId: customWritingStyles.value[0]?.id || 'st_1', targetWordCount: 1500, contextRounds: 5,
+              inventory: [],
+              gameLogs: [{
+                type: 'engine',
+                storyText: res.openingNarrative || '【序幕】：微光轻颤，你们的专属冒险拉开帷幕。',
+                choices: res.firstChoices && res.firstChoices.length ? res.firstChoices : ["握住同伴的手向前探查", "观察四周异动", "轻声询问对方的企图"],
+                images: [], discoveredClues: [], companionPOV: ''
+              }]
+            };
+            activeSessions.value.unshift(newSession);
+            currentSessionId.value = newSessId;
+            showCharAuthoredModal.value = false;
+            currentStep.value = 'game';
+            scrollToBottom();
+          } catch(e) {
+            alert(`反向执笔失败：${e.message}`);
+          } finally {
+            isGeneratingCharScript.value = false;
+          }
+        };
+
         const togglePersonaSelection = pId => {
           if (chosenPersonaIds.value.includes(pId)) {
             if (chosenPersonaIds.value.length > 1) chosenPersonaIds.value = chosenPersonaIds.value.filter(id => id !== pId);
@@ -1128,15 +1294,29 @@
 
         const confirmPersonaAndEnterGame = () => {
           const newSessId = 'sess_' + Date.now();
+          const isFree = isFreeModeSelection.value;
+          const userPersona = userPersonaList.value.find(u => u.id === chosenUserPersonaId.value) || userPersonaList.value[0];
+          const companions = personaList.value.filter(p => chosenPersonaIds.value.includes(p.id));
+          const companionNames = companions.map(c => c.name).join(' & ');
+
+          const opening = isFree
+            ? (freeModeCustomOpening.value.trim() || '【自由沙盒】：夜色深沉，前方的道路交织着不可预知的变数。')
+            : '【序幕】：荒废百年的尖顶古宅深立于浓雾之中。生锈铁门虚掩，红眼渡鸦正注视着你们二人。';
+
+          const initialChoices = isFree
+            ? ["环顾四周并勘查现场", "向同行同伴确认方位", "迈步向前探寻未知路径"]
+            : [...(selectedScript.value?.nodes[0]?.choices || ["握住铁门链条拉开", "勘查泥地拖拽痕迹"])];
+
           const newSession = {
-            id: newSessId, isFreeMode: false,
-            companionIds: [...chosenPersonaIds.value], userPersonaId: chosenUserPersonaId.value,
-            title: selectedScript.value.title, currentNodeIndex: 0, storySummary: '', targetWordCount: 1500, contextRounds: 5,
+            id: newSessId, isFreeMode: isFree,
+            companionIds: [...chosenPersonaIds.value], userPersonaId: userPersona.id,
+            title: isFree ? `自由沙盒 · ${companionNames}` : selectedScript.value.title,
+            currentNodeIndex: 0, storySummary: '', targetWordCount: 1500, contextRounds: 5,
             inventory: [], selectedStyleId: 'st_1',
             gameLogs: [{
               type: 'engine',
-              storyText: '【序幕】：荒废百年的尖顶古宅深立于浓雾之中。生锈铁门虚掩，红眼渡鸦正注视着你们二人。',
-              choices: [...selectedScript.value.nodes[0].choices],
+              storyText: opening,
+              choices: initialChoices,
               images: [], discoveredClues: [], companionPOV: ''
             }]
           };
@@ -1156,6 +1336,7 @@
           scrollToBottom();
         };
 
+        // 核心推演：带打字机流式、强制三选项分离解析
         const triggerPendingAction = async () => {
           if (!currentSession.value || isStreaming.value) return;
           const key = cleanApiKey();
@@ -1178,12 +1359,13 @@
             else if (l.type === 'engine') history.push({ role: 'assistant', content: l.storyText });
           });
 
-          const systemPrompt = `你是一个顶级互动小说跑团引擎。
-【同伴人设核心】：\n${compPrompts}
-【要求】：
-1. 深入刻画同伴与玩家的互动动作、微表情及眼神交流。
-2. 篇幅大约 ${targetWords} 字。
-3. 文末必须强制输出 <<<CHOICES>>> 换行并给出 3 个后续行动选项（1. 2. 3.）。`;
+          const systemPrompt = `你是一个顶级互动小说兼跑团推演引擎。
+【同伴核心人设准则（绝对不OOC）】：\n${compPrompts}
+${currentSession.value.storySummary ? `【此前剧情关键线索备忘】：\n${currentSession.value.storySummary}\n` : ''}
+【格式要求】：
+1. 深入刻画同伴与玩家的动作细节、隐秘眼神交锋与微表情。
+2. 篇幅约 ${targetWords} 字。
+3. 文末必须强制另起一行输出 <<<CHOICES>>>，紧接着输出 3 个后续行动选项（格式为：1. 选项一 2. 选项二 3. 选项三）。`;
 
           try {
             const base = normalizeBaseUrl(settings.baseUrl);
@@ -1220,7 +1402,13 @@
             if (fullText.includes('<<<CHOICES>>>')) {
               const parts = fullText.split('<<<CHOICES>>>');
               storyPart = parts[0].trim();
-              choicesList = parts[1].trim().split('\n').map(l => l.replace(/^[\d\.\-\*、\s]+/, '').trim()).filter(Boolean).slice(0, 3);
+              choicesList = parts[1].trim().split('\n')
+                .map(l => l.replace(/^[\d\.\-\*、\s]+/, '').trim())
+                .filter(Boolean).slice(0, 3);
+            }
+
+            if (choicesList.length === 0) {
+              choicesList = ["向前探查深入情况", "与身旁的同伴轻声对策", "警惕地环顾四周异变"];
             }
 
             currentSession.value.gameLogs.push({
@@ -1331,9 +1519,10 @@
         const removeImage = (item, idx) => item.images.splice(idx, 1);
         const previewImage = url => previewImgUrl.value = url;
 
+        // 备忘录提取
         const generateAiSummary = async () => {
           const key = cleanApiKey();
-          if (!key) return;
+          if (!key) { openSettings(); return; }
           isSummarizing.value = true;
           try {
             const base = normalizeBaseUrl(settings.baseUrl);
@@ -1342,12 +1531,12 @@
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
               body: JSON.stringify({
                 model: settings.model,
-                messages: [{ role: 'user', content: `总结以下剧情线索要点，控制在100字：\n${currentSession.value.gameLogs.map(l => l.storyText || l.text).join('\n')}` }]
+                messages: [{ role: 'user', content: `请对以下历次跑团与剧情推演内容进行线索提炼，列出关键发现与同伴关系进展，字数控制在150字左右：\n${currentSession.value.gameLogs.map(l => l.storyText || l.text).join('\n')}` }]
               })
             });
             const data = await resp.json();
             currentSession.value.storySummary = data.choices?.[0]?.message?.content?.trim() || '';
-          } catch(e) {} finally { isSummarizing.value = false; }
+          } catch(e) { alert('生成总结失败'); } finally { isSummarizing.value = false; }
         };
 
         // 日常随聊
@@ -1411,9 +1600,10 @@
         return {
           currentStep, previousStep, customInput, isStreaming, isActionLocked, streamElapsed, streamingCleanText,
           chatBoxRef, showAffectionModal, showLetterModal, showInventoryModal, showSummaryModal, showStyleModal,
-          showImageModal, previewImgUrl, isSummarizing, isGeneratingImageNow, imageGenOptions,
+          showImageModal, showCharAuthoredModal, isGeneratingCharScript, authorCharId, authorUserPersonaId,
+          previewImgUrl, isSummarizing, isGeneratingImageNow, imageGenOptions,
           letterAuthorId, currentMidnightLetter, isGeneratingLetter, customWritingStyles, scripts, selectedScript,
-          activeSessions, currentSessionId, currentSession,
+          isFreeModeSelection, freeModeCustomOpening, activeSessions, currentSessionId, currentSession,
           settings, imageConfig, activeDailySessions, currentDailySessionId, currentDailySession, dailyInput, isDailyStreaming,
           dailyChatBoxRef, personaList, userPersonaList, chosenPersonaId, chosenPersonaIds, chosenUserPersonaId,
           personaTab, editingPersonaId, personaForm, editingUserPersonaId, userPersonaForm,
@@ -1423,7 +1613,8 @@
           fetchMidnightLetter, getAffectionScore, getAffectionStage, getAffectionDesc, handlePersonaImageUpload,
           loadPersonaToEdit, resetEditingPersona, savePersonaCard, deletePersona, loadUserPersonaToEdit,
           resetEditingUserPersona, saveUserPersonaCard, setDefaultUserPersona, quickStartDailyChatFromPersona,
-          selectScript, togglePersonaSelection, confirmPersonaAndEnterGame, resumeSession, deleteSession,
+          selectScript, openFreeModeDetail, openCharAuthoredModal, generateAndLaunchCharAuthoredGame,
+          togglePersonaSelection, confirmPersonaAndEnterGame, resumeSession, deleteSession,
           chooseOption, submitCustomAction, triggerPendingAction, startEdit, cancelEdit, saveAndRegeneratePlayer,
           saveEditStory, deleteLog, regenerateFromPlayer, rollbackToLog, rewindLastRound, resetCurrentGame,
           regenerateLastResponse, searchMicroCues, toggleCompanionPOV, addToInventory, openImageModal,
