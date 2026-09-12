@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>StoryEngine - 终极角色沉浸互动引擎 (安全修复版)</title>
+  <title>StoryEngine - 终极角色沉浸互动引擎</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style>
@@ -469,7 +469,7 @@
             const data = await resp.json();
             const reply = data.choices?.[0]?.message?.content || '（前方一切正常）';
             currentSession.value.gameLogs.push({ type: 'engine', storyText: reply, choices: ["继续"] });
-          } catch(e) { alert('请求失败'); } finally { isStreaming.value = false; scrollToBottom(); }
+          } catch(e) { alert('请求失败'); } finally { isStreaming.value = false; }
         };
 
         const chooseOption = txt => executeAction(txt);
@@ -534,19 +534,3 @@
   </script>
 </body>
 </html>
-```This error happens because your Vue 3 template is trying to read the property `targetWordCount` from an object or state variable that is currently **`null`** or **`undefined`** when the render function runs. 
-
-Here is how to quickly track it down and fix it:
-
-### 1. Where to Look
-* Check your component's template around **line 660** (referenced in the stack trace).
-* Look for expressions like `someObject.targetWordCount` or nested bindings where the parent object hasn't been initialized yet.
-
-### 2. Common Solutions
-
-* **Option A: Use Optional Chaining (`?.`)**
-  If the object might be null during initial load, safeguard the property access in your template or computed property:
-  ```html
-  <!-- Example -->
-  <span>{{ currentStory?.targetWordCount }}</span>
-  
