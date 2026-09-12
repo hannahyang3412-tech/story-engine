@@ -14,7 +14,7 @@
 <body class="bg-slate-950 text-slate-100 antialiased select-none font-sans">
   <div id="app" class="h-[100dvh] max-w-md mx-auto flex flex-col bg-slate-900 shadow-2xl relative overflow-hidden">
 
-    <!-- ================= 阶段 1：开机封面 ================= -->
+    <!-- ================= 封面 ================= -->
     <section v-if="currentStep === 'boot'" class="h-full w-full flex flex-col justify-between items-center p-8 bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/40 relative z-50">
       <div class="w-full flex justify-end">
         <button @click="openSettings" class="text-xs text-slate-500 hover:text-indigo-400 p-2">⚙️ 接口设置</button>
@@ -27,7 +27,7 @@
           </svg>
         </div>
         <h1 class="text-3xl font-serif tracking-[0.25em] text-slate-100 font-light pl-2">命运交织</h1>
-        <p class="text-xs text-slate-400 tracking-[0.4em] uppercase font-light pl-1">StoryEngine Ultimate</p>
+        <p class="text-xs text-slate-400 tracking-[0.4em] uppercase font-light pl-1">StoryEngine & Affection</p>
       </div>
 
       <div class="w-full pb-6">
@@ -37,7 +37,7 @@
       </div>
     </section>
 
-    <!-- 顶部通用状态栏 -->
+    <!-- 顶部状态栏 -->
     <header v-if="currentStep !== 'boot'" class="h-14 px-3 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-900/90 backdrop-blur z-20">
       <div class="flex items-center space-x-1 overflow-hidden">
         <button @click="handleStepBack" class="p-1.5 -ml-1 text-slate-300 hover:text-white flex items-center gap-1 shrink-0">
@@ -56,7 +56,7 @@
     <!-- 主视口 -->
     <main v-if="currentStep !== 'boot'" class="flex-1 overflow-hidden relative flex flex-col">
 
-      <!-- ================= 模式枢纽 ================= -->
+      <!-- 模式选择枢纽 -->
       <section v-show="currentStep === 'mode_hub'" class="h-full overflow-y-auto p-4 space-y-3.5 flex flex-col justify-center no-scrollbar">
         <div class="text-center space-y-0.5 mb-1">
           <h2 class="text-base font-bold text-white tracking-wider">选择体验空间</h2>
@@ -91,20 +91,12 @@
         </div>
       </section>
 
-      <!-- ================= 剧情大厅 ================= -->
+      <!-- 剧本大厅 -->
       <section v-show="currentStep === 'scripts'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar">
         <div class="flex items-center justify-between px-1">
           <button @click="currentStep = 'ongoing'" class="text-xs text-indigo-300 hover:underline flex items-center gap-1">
             <span>⏳ 查看正在进行的探险存档 ({{ activeSessions.length }})</span>
           </button>
-        </div>
-
-        <div @click="openCharAuthoredModal" class="bg-gradient-to-r from-rose-950/50 via-purple-950/50 to-slate-900 border border-rose-500/40 hover:border-rose-400 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold uppercase">角色反向带跑</span>
-          </div>
-          <h2 class="text-base font-bold text-white">💌 TA的心愿 · 为你定制专属剧本</h2>
-          <p class="text-xs text-slate-300 leading-relaxed">由 Char 依据自身执念、人设背景或日常闲聊线索，反向为你设计一场探险！</p>
         </div>
 
         <div v-for="script in scripts" :key="script.id" class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 space-y-3">
@@ -114,7 +106,7 @@
         </div>
       </section>
 
-      <!-- ================= 存档列表 ================= -->
+      <!-- 存档列表 -->
       <section v-show="currentStep === 'ongoing'" class="h-full overflow-y-auto p-4 space-y-3 no-scrollbar">
         <div v-if="activeSessions.length === 0" class="text-center py-12 text-xs text-slate-400">当前没有正在进行的探险存档</div>
         <div v-for="sess in activeSessions" :key="sess.id" class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-3.5 space-y-2 text-xs">
@@ -126,7 +118,7 @@
         </div>
       </section>
 
-      <!-- ================= 选人设配置 ================= -->
+      <!-- 选人设 -->
       <section v-show="currentStep === 'select_persona'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-3.5">
           <h2 class="font-bold text-white text-sm">{{ selectedScript?.title || '自由沙盒世界' }}</h2>
@@ -147,7 +139,7 @@
         <button @click="confirmPersonaAndEnterGame" class="w-full py-3 bg-indigo-600 text-white rounded-2xl font-semibold shadow-lg">启程</button>
       </section>
 
-      <!-- ================= 游戏推演进行中 ================= -->
+      <!-- 推演中 -->
       <section v-show="currentStep === 'game'" class="h-full flex flex-col relative">
         <div class="bg-slate-800 px-3 py-1.5 border-b border-slate-700 flex justify-between items-center text-xs">
           <span class="text-amber-300">冒险进行中</span>
@@ -170,13 +162,13 @@
             <button @click="triggerPendingAction" class="px-3.5 py-1.5 bg-indigo-600 text-white rounded-lg font-semibold animate-pulse shadow">📨 接收 AI 回复</button>
           </div>
           <div class="flex items-center space-x-2">
-            <input v-model="customInput" @keydown.enter.prevent="submitCustomAction" :disabled="isActionLocked || isStreaming" type="text" placeholder="输入行动..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" />
-            <button @click="submitCustomAction" :disabled="isActionLocked || isStreaming || !customInput.trim()" class="px-4 py-2 bg-amber-600 text-white rounded-xl text-xs font-semibold">行动</button>
+            <input v-model="customInput" @keydown.enter.prevent="submitCustomAction" :disabled="isStreaming" type="text" placeholder="输入行动..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" />
+            <button @click="submitCustomAction" :disabled="isStreaming || !customInput.trim()" class="px-4 py-2 bg-amber-600 text-white rounded-xl text-xs font-semibold">行动</button>
           </div>
         </footer>
       </section>
 
-      <!-- ================= 日常聊天准备页 ================= -->
+      <!-- 日常随聊设置 -->
       <section v-show="currentStep === 'daily_setup'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
         <div class="bg-purple-950/40 border border-purple-500/30 rounded-2xl p-4">
           <h2 class="text-sm font-bold text-white mb-1">💬 发起日常随聊</h2>
@@ -205,7 +197,7 @@
         <button @click="startNewDailyChat" class="w-full py-3 bg-purple-600 text-white rounded-2xl font-semibold">开启闲聊</button>
       </section>
 
-      <!-- ================= 日常聊天室 ================= -->
+      <!-- 日常聊天室 -->
       <section v-show="currentStep === 'daily_chat'" class="h-full flex flex-col relative text-xs">
         <div class="bg-slate-800 px-3 py-2 border-b border-slate-700 flex justify-between items-center">
           <span class="font-bold text-white">{{ getPersonaName(currentDailySession?.personaId) }}</span>
@@ -229,7 +221,7 @@
         </footer>
       </section>
 
-      <!-- ================= 人设管理中心 ================= -->
+      <!-- 人设管理中心 -->
       <section v-show="currentStep === 'persona_mgr'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
         <div class="grid grid-cols-2 gap-2 bg-slate-800 p-1 rounded-xl">
           <button @click="personaTab = 'companion'" :class="personaTab === 'companion' ? 'bg-indigo-600 text-white' : 'text-slate-400'" class="py-2 rounded-lg font-bold">同伴 Char 人设</button>
@@ -243,12 +235,18 @@
             <div class="flex gap-2 pt-1">
               <button @click="quickStartDailyChatFromPersona(p.id)" class="flex-1 py-1 bg-purple-600 text-white rounded">闲聊</button>
               <button @click="loadPersonaToEdit(p)" class="px-3 py-1 bg-slate-700 text-slate-200 rounded">编辑</button>
+              <button v-if="personaList.length > 1" @click="deletePersona(p.id)" class="px-2 py-1 bg-slate-700 text-red-400 rounded">✕</button>
             </div>
           </div>
-          <div class="bg-slate-900 p-4 border border-slate-800 rounded-2xl space-y-2">
-            <h3 class="font-bold text-amber-400">{{ editingPersonaId ? '编辑同伴' : '新建同伴' }}</h3>
+          <div id="persona-edit-form" class="bg-slate-900 p-4 border border-slate-800 rounded-2xl space-y-2">
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-amber-400">{{ editingPersonaId ? `编辑同伴：${personaForm.name}` : '新建同伴' }}</h3>
+              <button v-if="editingPersonaId" @click="resetEditingPersona" class="text-slate-400">取消</button>
+            </div>
             <input v-model="personaForm.name" placeholder="姓名" class="w-full bg-slate-800 rounded p-2 text-white" />
-            <textarea v-model="personaForm.personaPrompt" rows="3" placeholder="核心详细人设 (Char Persona)..." class="w-full bg-slate-800 rounded p-2 text-white"></textarea>
+            <input v-model="personaForm.userNickname" placeholder="对你的专属称谓 (如: 小朋友)" class="w-full bg-slate-800 rounded p-2 text-white" />
+            <textarea v-model="personaForm.appearance" rows="2" placeholder="外貌穿着描述..." class="w-full bg-slate-800 rounded p-2 text-white"></textarea>
+            <textarea v-model="personaForm.personaPrompt" rows="4" placeholder="核心详细人设 (Char Persona)..." class="w-full bg-slate-800 rounded p-2 text-white"></textarea>
             <button @click="savePersonaCard" class="w-full py-2 bg-indigo-600 text-white rounded font-medium">保存同伴人设</button>
           </div>
         </div>
@@ -256,10 +254,17 @@
         <div v-show="personaTab === 'user'" class="space-y-3">
           <div v-for="up in userPersonaList" :key="up.id" class="border border-slate-700 bg-slate-800 rounded-2xl p-3 space-y-1">
             <div class="font-bold text-white">{{ up.name }}</div>
-            <button @click="setDefaultUserPersona(up.id)" class="py-1 px-3 bg-indigo-600 text-white rounded text-[10px]">设为默认</button>
+            <p class="text-slate-400 truncate">{{ up.appearance }}</p>
+            <div class="flex gap-2 pt-1">
+              <button @click="setDefaultUserPersona(up.id)" class="py-1 px-3 bg-indigo-600 text-white rounded text-[10px]">设为默认</button>
+              <button @click="loadUserPersonaToEdit(up)" class="py-1 px-3 bg-slate-700 text-slate-200 rounded text-[10px]">编辑</button>
+            </div>
           </div>
-          <div class="bg-slate-900 p-4 border border-slate-800 rounded-2xl space-y-2">
-            <h3 class="font-bold text-indigo-400">新建我的身份</h3>
+          <div id="user-persona-edit-form" class="bg-slate-900 p-4 border border-slate-800 rounded-2xl space-y-2">
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-indigo-400">{{ editingUserPersonaId ? `编辑身份：${userPersonaForm.name}` : '新建我的身份' }}</h3>
+              <button v-if="editingUserPersonaId" @click="resetEditingUserPersona" class="text-slate-400">取消</button>
+            </div>
             <input v-model="userPersonaForm.name" placeholder="你的姓名" class="w-full bg-slate-800 rounded p-2 text-white" />
             <textarea v-model="userPersonaForm.appearance" rows="2" placeholder="外貌与背景..." class="w-full bg-slate-800 rounded p-2 text-white"></textarea>
             <button @click="saveUserPersonaCard" class="w-full py-2 bg-indigo-600 text-white rounded font-medium">保存身份</button>
@@ -267,16 +272,64 @@
         </div>
       </section>
 
-      <!-- ================= 接口设置 ================= -->
+      <!-- 接口设置（文本 + 生图引擎双重管理） -->
       <section v-show="currentStep === 'settings'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
         <div class="space-y-3 bg-slate-800 p-4 rounded-2xl">
-          <h3 class="font-bold text-amber-400">⚙️ 文本模型 API 预设方案管理</h3>
+          <h3 class="font-bold text-amber-400">⚙️ 文本模型 API 配置</h3>
           <input v-model="settings.baseUrl" placeholder="Base URL" class="w-full bg-slate-950 rounded p-2 text-white" />
           <input v-model="settings.apiKey" type="password" placeholder="API Key" class="w-full bg-slate-950 rounded p-2 text-white font-mono" />
           <input v-model="settings.model" placeholder="Model Name" class="w-full bg-slate-950 rounded p-2 text-white" />
-          <button @click="saveSettings" class="w-full py-2 bg-indigo-600 text-white rounded font-medium">保存设置</button>
         </div>
+
+        <div class="space-y-3 bg-slate-800 p-4 rounded-2xl">
+          <div class="flex justify-between items-center">
+            <h3 class="font-bold text-amber-400">🎨 生图引擎预设方案管理</h3>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" @click="imageConfig.provider = 'public'" :class="imageConfig.provider === 'public' ? 'bg-amber-600 text-white font-bold' : 'bg-slate-900 text-slate-400'" class="py-1.5 rounded-xl border border-slate-700">公开免费 (Flux)</button>
+            <button type="button" @click="imageConfig.provider = 'custom'" :class="imageConfig.provider === 'custom' ? 'bg-amber-600 text-white font-bold' : 'bg-slate-900 text-slate-400'" class="py-1.5 rounded-xl border border-slate-700">自定义生图 API</button>
+          </div>
+          <div v-if="imageConfig.provider === 'custom'" class="space-y-2 pt-2 border-t border-slate-700">
+            <input v-model="imageConfig.baseUrl" placeholder="生图 Base URL" class="w-full bg-slate-950 rounded p-2 text-white" />
+            <input v-model="imageConfig.apiKey" type="password" placeholder="生图 API Key" class="w-full bg-slate-950 rounded p-2 text-white font-mono" />
+            <input v-model="imageConfig.model" placeholder="生图模型 (如: dall-e-3)" class="w-full bg-slate-950 rounded p-2 text-white" />
+          </div>
+        </div>
+
+        <button @click="saveSettings" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium transition">保存全部配置</button>
       </section>
+
+      <!-- 好感羁绊看板弹窗 -->
+      <div v-if="showAffectionModal" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-indigo-500/40 rounded-3xl p-4 w-full max-w-sm max-h-[85%] flex flex-col space-y-3 shadow-2xl overflow-y-auto no-scrollbar text-xs">
+          <div class="flex justify-between items-center"><h3 class="font-bold text-indigo-300">🗺️ 好感羁绊看板</h3><button @click="showAffectionModal = false" class="text-slate-400">关闭</button></div>
+          <div v-for="p in personaList" :key="p.id" class="bg-slate-800 p-3.5 rounded-xl space-y-1.5">
+            <div class="font-bold text-white flex justify-between">
+              <span>{{ p.name }}</span>
+              <span class="text-indigo-300">{{ getAffectionStage(p.id) }}</span>
+            </div>
+            <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+              <div class="bg-gradient-to-r from-indigo-500 to-rose-500 h-full transition-all duration-300" :style="{ width: getAffectionScore(p.id) + '%' }"></div>
+            </div>
+            <p class="text-[10px] text-slate-400 italic">{{ getAffectionDesc(p.id) }}</p>
+          </div>
+          <button @click="showAffectionModal = false" class="py-2 bg-slate-800 text-slate-200 rounded-xl">返回</button>
+        </div>
+      </div>
+
+      <!-- 深夜来信弹窗 -->
+      <div v-if="showLetterModal" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-rose-500/40 rounded-3xl p-4 w-full max-w-sm max-h-[88%] flex flex-col space-y-3 shadow-2xl overflow-y-auto no-scrollbar text-xs">
+          <div class="flex justify-between items-center"><h3 class="font-bold text-rose-300">💌 TA 的深夜亲笔来信</h3><button @click="showLetterModal = false" class="text-slate-400">关闭</button></div>
+          <select v-model="letterAuthorId" class="w-full bg-slate-950 rounded p-2 text-white">
+            <option v-for="p in personaList" :key="p.id" :value="p.id">{{ p.name }}</option>
+          </select>
+          <div v-if="currentMidnightLetter" class="bg-rose-950/30 border border-rose-500/30 p-3.5 rounded-2xl text-rose-100 font-serif whitespace-pre-wrap leading-relaxed">{{ currentMidnightLetter }}</div>
+          <button @click="fetchMidnightLetter" :disabled="isGeneratingLetter" class="py-3 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl font-semibold shadow-lg">
+            {{ isGeneratingLetter ? '拆信中...' : '✨ 查收信件' }}
+          </button>
+        </div>
+      </div>
 
     </main>
   </div>
@@ -284,22 +337,13 @@
   <script>
     const { createApp, ref, reactive, computed, nextTick, watch } = Vue;
 
-    const PRESET_SCRIPTS = [
-      {
-        id: "script_haunted_mansion",
-        title: "雾隐古宅的第十三阶",
-        tag: "悬疑解密",
-        description: "荒废百年的古宅深立于浓雾之中...",
-        nodes: [{ choices: ["推开大门", "观察四周"] }]
-      }
-    ];
-
     const DEFAULT_PERSONAS = [
-      { id: "p_shen", name: "沈知韫", userNickname: "小朋友", appearance: "清冷出尘...", traits: "克制护短", personaPrompt: "性格清冷自持但极度护短。" }
+      { id: "p_shen", name: "沈知韫", userNickname: "小朋友", appearance: "清冷出尘，黑色微卷长发，深色风衣。", traits: "克制护短", personaPrompt: "性格清冷自持但极度护短，习惯检查细节。" },
+      { id: "p_li", name: "黎深", userNickname: "乖宝", appearance: "清冷矜贵，金丝眼镜，笔挺深色大衣。", traits: "冷静客观、内敛纵容", personaPrompt: "严谨克制，对玩家怀有无可奈何的纵容与细致关照。" }
     ];
 
     const DEFAULT_USER_PERSONAS = [
-      { id: "up_default", name: "林言", appearance: "调查员" }
+      { id: "up_default", name: "林言", appearance: "身手敏捷、眼神清澈。" }
     ];
 
     createApp({
@@ -309,7 +353,7 @@
         const customInput = ref('');
         const isStreaming = ref(false);
         const chatBoxRef = ref(null);
-        
+
         const showAffectionModal = ref(false);
         const showLetterModal = ref(false);
         const showInventoryModal = ref(false);
@@ -317,7 +361,9 @@
         const currentMidnightLetter = ref('');
         const isGeneratingLetter = ref(false);
 
-        const scripts = ref(PRESET_SCRIPTS);
+        const scripts = ref([
+          { id: "script_haunted_mansion", title: "雾隐古宅的第十三阶", description: "荒废百年的尖顶古宅深立于浓雾之中...", nodes: [{ choices: ["握住铁门链条拉开", "观察四周泥地痕迹"] }] }
+        ]);
         const selectedScript = ref(scripts.value[0]);
         const activeSessions = ref(JSON.parse(localStorage.getItem('se_sessions')) || []);
         const currentSessionId = ref(localStorage.getItem('se_curr_sess_id') || null);
@@ -329,12 +375,19 @@
           model: localStorage.getItem('se_s_model') || 'gemini-2.5-flash'
         });
 
+        const savedImgConfig = JSON.parse(localStorage.getItem('se_img_config') || '{}');
+        const imageConfig = reactive({
+          provider: savedImgConfig.provider || 'public',
+          baseUrl: savedImgConfig.baseUrl || '',
+          apiKey: savedImgConfig.apiKey || '',
+          model: savedImgConfig.model || 'dall-e-3'
+        });
+
         const activeDailySessions = ref(JSON.parse(localStorage.getItem('se_daily_sessions')) || []);
         const currentDailySessionId = ref(localStorage.getItem('se_curr_daily_id') || null);
         const dailyInput = ref('');
         const isDailyStreaming = ref(false);
         const dailyChatBoxRef = ref(null);
-        const dailyCustomScene = ref('');
 
         const personaList = ref(JSON.parse(localStorage.getItem('se_persona_list')) || DEFAULT_PERSONAS);
         const userPersonaList = ref(JSON.parse(localStorage.getItem('se_user_persona_list')) || DEFAULT_USER_PERSONAS);
@@ -343,6 +396,7 @@
         const chosenPersonaIds = ref(['p_shen']);
         const chosenUserPersonaId = ref('up_default');
         const personaTab = ref('companion');
+
         const editingPersonaId = ref(null);
         const personaForm = reactive({ name: '', userNickname: '', appearance: '', traits: '', personaPrompt: '' });
         const editingUserPersonaId = ref(null);
@@ -358,7 +412,7 @@
             case 'ongoing': return '剧情存档';
             case 'select_persona': return '配置入局';
             case 'game': return currentSession.value?.title || '探险中';
-            case 'daily_setup': return '日常配置';
+            case 'daily_setup': return '日常随聊配置';
             case 'daily_chat': return '日常聊天室';
             case 'persona_mgr': return '人设中心';
             case 'settings': return '接口配置';
@@ -402,14 +456,38 @@
           localStorage.setItem('se_s_url', settings.baseUrl);
           localStorage.setItem('se_s_key', settings.apiKey);
           localStorage.setItem('se_s_model', settings.model);
-          alert('保存成功！');
+          localStorage.setItem('se_img_config', JSON.stringify(imageConfig));
+          alert('配置已成功保存！');
           currentStep.value = previousStep.value;
         };
 
+        // 好感度看板逻辑
         const openAffectionBoard = () => { showAffectionModal.value = true; };
+        const getAffectionScore = pId => {
+          let score = 50;
+          activeSessions.value.forEach(s => { if ((s.companionIds || []).includes(pId)) score += (s.gameLogs?.length || 0) * 4; });
+          activeDailySessions.value.forEach(d => { if (d.personaId === pId) score += (d.messages?.length || 0) * 3; });
+          return Math.min(score, 100);
+        };
+        const getAffectionStage = pId => {
+          const sc = getAffectionScore(pId);
+          if (sc < 60) return '初识渐生 (Warm)';
+          if (sc < 85) return '心动暧昧 (Sweet)';
+          return '生死相许 (Deep Bond)';
+        };
+        const getAffectionDesc = pId => {
+          const sc = getAffectionScore(pId);
+          if (sc < 60) return '“虽然相处尚浅，但TA对你的注意力正悄然增加。”';
+          if (sc < 85) return '“眼神的交汇与克制的心跳，昭示着彼此不再只是寻常同伴。”';
+          return '“灵魂与执念紧紧缠绕，无论前路何方，TA都将永远护你身后。”';
+        };
+
+        // 深夜来信逻辑
         const openMidnightLetterModal = () => {
           showLetterModal.value = true;
-          currentMidnightLetter.value = '（点击下方按钮，由 TA 在月色下为你亲笔落下一封信……）';
+          if (!currentMidnightLetter.value) {
+            currentMidnightLetter.value = '（点击下方按钮，由 TA 在月色下为你亲笔落下一封信……）';
+          }
         };
 
         const fetchMidnightLetter = async () => {
@@ -419,13 +497,88 @@
             const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
-              body: JSON.stringify({ model: settings.model, messages: [{ role: 'user', content: `你是同伴【${author.name}】。写一封深夜亲笔信给玩家，150-250字。` }], temperature: 0.85 })
+              body: JSON.stringify({
+                model: settings.model,
+                messages: [{ role: 'user', content: `你扮演同伴【${author.name}】（设定：${author.personaPrompt || author.traits}）。在深夜万籁俱寂时，给玩家写下一封克制深情的亲笔信，字数150-200字左右。` }],
+                temperature: 0.85
+              })
             });
             const data = await resp.json();
-            currentMidnightLetter.value = data.choices?.[0]?.message?.content?.trim() || '（信件生成成功）';
-          } catch(e) { currentMidnightLetter.value = '生成失败，请检查API配置'; } finally { isGeneratingLetter.value = false; }
+            currentMidnightLetter.value = data.choices?.[0]?.message?.content?.trim() || '（信纸上带着淡淡的香气与墨迹）';
+          } catch(e) {
+            currentMidnightLetter.value = '生成失败，请检查网络与API配置。';
+          } finally {
+            isGeneratingLetter.value = false;
+          }
         };
 
+        // 人设管理方法
+        const loadPersonaToEdit = p => {
+          editingPersonaId.value = p.id;
+          Object.assign(personaForm, p);
+          nextTick(() => document.getElementById('persona-edit-form')?.scrollIntoView({ behavior: 'smooth' }));
+        };
+
+        const resetEditingPersona = () => {
+          editingPersonaId.value = null;
+          Object.assign(personaForm, { name: '', userNickname: '', appearance: '', traits: '', personaPrompt: '' });
+        };
+
+        const savePersonaCard = () => {
+          if (!personaForm.name.trim()) return;
+          if (editingPersonaId.value) {
+            const idx = personaList.value.findIndex(p => p.id === editingPersonaId.value);
+            if (idx !== -1) personaList.value[idx] = { id: editingPersonaId.value, ...personaForm };
+          } else {
+            personaList.value.push({ id: 'p_' + Date.now(), ...personaForm });
+          }
+          localStorage.setItem('se_persona_list', JSON.stringify(personaList.value));
+          alert('同伴人设保存成功！');
+          resetEditingPersona();
+        };
+
+        const deletePersona = pId => {
+          if (confirm('确定删除此同伴？')) {
+            personaList.value = personaList.value.filter(p => p.id !== pId);
+            localStorage.setItem('se_persona_list', JSON.stringify(personaList.value));
+          }
+        };
+
+        const loadUserPersonaToEdit = up => {
+          editingUserPersonaId.value = up.id;
+          Object.assign(userPersonaForm, up);
+          nextTick(() => document.getElementById('user-persona-edit-form')?.scrollIntoView({ behavior: 'smooth' }));
+        };
+
+        const resetEditingUserPersona = () => {
+          editingUserPersonaId.value = null;
+          Object.assign(userPersonaForm, { name: '', appearance: '' });
+        };
+
+        const saveUserPersonaCard = () => {
+          if (!userPersonaForm.name.trim()) return;
+          if (editingUserPersonaId.value) {
+            const idx = userPersonaList.value.findIndex(up => up.id === editingUserPersonaId.value);
+            if (idx !== -1) userPersonaList.value[idx] = { id: editingUserPersonaId.value, ...userPersonaForm };
+          } else {
+            userPersonaList.value.push({ id: 'up_' + Date.now(), ...userPersonaForm });
+          }
+          localStorage.setItem('se_user_persona_list', JSON.stringify(userPersonaList.value));
+          alert('身份面具保存成功！');
+          resetEditingUserPersona();
+        };
+
+        const setDefaultUserPersona = upId => {
+          chosenUserPersonaId.value = upId;
+          alert('已设为默认面具！');
+        };
+
+        const quickStartDailyChatFromPersona = pId => {
+          chosenPersonaId.value = pId;
+          startNewDailyChat();
+        };
+
+        // 剧情跑团方法
         const selectScript = script => { selectedScript.value = script; currentStep.value = 'select_persona'; };
         const togglePersonaSelection = pId => {
           if (chosenPersonaIds.value.includes(pId)) {
@@ -438,8 +591,8 @@
           const newSession = {
             id: newSessId, isFreeMode: false,
             companionIds: [...chosenPersonaIds.value], userPersonaId: chosenUserPersonaId.value,
-            title: selectedScript.value.title, currentNodeIndex: 0, storySummary: '', inventory: [], targetWordCount: 1500,
-            gameLogs: [{ type: 'engine', storyText: '【序幕】：冒险正式开始。', choices: ["向前探索"], images: [] }]
+            title: selectedScript.value.title, currentNodeIndex: 0, storySummary: '', inventory: [],
+            gameLogs: [{ type: 'engine', storyText: '【序幕】：你们已踏入未知的领域，身侧同伴紧随守护。', choices: ["向前探索"] }]
           };
           activeSessions.value.unshift(newSession);
           currentSessionId.value = newSessId;
@@ -464,15 +617,14 @@
             const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
-              body: JSON.stringify({ model: settings.model, messages: [{ role: 'user', content: '继续剧情推演' }], stream: false })
+              body: JSON.stringify({ model: settings.model, messages: [{ role: 'user', content: '继续跑团推演，描写同伴互动与环境变化，约300字。' }], stream: false })
             });
             const data = await resp.json();
-            const reply = data.choices?.[0]?.message?.content || '（前方一切正常）';
-            currentSession.value.gameLogs.push({ type: 'engine', storyText: reply, choices: ["继续"] });
-          } catch(e) { alert('请求失败'); } finally { isStreaming.value = false; }
+            const reply = data.choices?.[0]?.message?.content || '（探索继续推进...）';
+            currentSession.value.gameLogs.push({ type: 'engine', storyText: reply });
+          } catch(e) { alert('推演失败，请检查API配置'); } finally { isStreaming.value = false; scrollToBottom(); }
         };
 
-        const chooseOption = txt => executeAction(txt);
         const submitCustomAction = () => {
           if (!customInput.value.trim()) return;
           const t = customInput.value.trim();
@@ -480,16 +632,19 @@
           executeAction(t);
         };
 
+        // 日常随聊方法
         const openDailyChatSetup = () => { currentStep.value = 'daily_setup'; };
         const startNewDailyChat = () => {
           const newId = 'daily_' + Date.now();
+          const p = personaList.value.find(item => item.id === chosenPersonaId.value) || personaList.value[0];
           activeDailySessions.value.unshift({
-            id: newId, personaId: chosenPersonaId.value, userPersonaId: chosenUserPersonaId.value,
-            title: '日常漫谈', messages: [{ role: 'assistant', text: '（抬眸凝视着你）今天怎么有空约我？' }]
+            id: newId, personaId: p.id, userPersonaId: chosenUserPersonaId.value,
+            title: `${p.name} 的日常漫谈`, messages: [{ role: 'assistant', text: `（${p.name}在你身侧坐下，抬眸凝视着你）\n“想聊点什么？”` }]
           });
           currentDailySessionId.value = newId;
           currentStep.value = 'daily_chat';
         };
+
         const resumeDailySession = d => { currentDailySessionId.value = d.id; currentStep.value = 'daily_chat'; };
         const submitDailyInput = () => {
           if (!dailyInput.value.trim() || !currentDailySession.value) return;
@@ -498,36 +653,46 @@
           currentDailySession.value.messages.push({ role: 'user', text });
           currentDailySession.value.pendingMessage = true;
         };
+
         const triggerDailyPendingMessage = async () => {
           if (!currentDailySession.value || isDailyStreaming.value) return;
           currentDailySession.value.pendingMessage = false;
           isDailyStreaming.value = true;
+          const p = personaList.value.find(item => item.id === currentDailySession.value.personaId) || personaList.value[0];
           try {
             const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
-              body: JSON.stringify({ model: settings.model, messages: [{ role: 'user', content: '回复闲聊' }], stream: false })
+              body: JSON.stringify({
+                model: settings.model,
+                messages: [
+                  { role: 'system', content: `你扮演【${p.name}】（人设：${p.personaPrompt || p.traits}）。对玩家称呼【${p.userNickname || '你'}】，口吻亲近温和。` },
+                  ...currentDailySession.value.messages.slice(-6).map(m => ({ role: m.role, content: m.text }))
+                ],
+                stream: false
+              })
             });
             const data = await resp.json();
-            const reply = data.choices?.[0]?.message?.content || '（若有所思）';
+            const reply = data.choices?.[0]?.message?.content || '（若有所思地看着你）';
             currentDailySession.value.messages.push({ role: 'assistant', text: reply });
-          } catch(e) {} finally { isDailyStreaming.value = false; }
+          } catch(e) { alert('回复失败'); } finally { isDailyStreaming.value = false; }
         };
+
         const rewindDailyRound = () => { if (currentDailySession.value?.messages.length > 1) currentDailySession.value.messages.pop(); };
 
         return {
           currentStep, previousStep, customInput, isStreaming, chatBoxRef, showAffectionModal, showLetterModal, showInventoryModal,
           letterAuthorId, currentMidnightLetter, isGeneratingLetter, scripts, selectedScript, activeSessions,
-          settings, activeDailySessions, currentDailySessionId, dailyInput, isDailyStreaming, dailyChatBoxRef, dailyCustomScene,
+          settings, imageConfig, activeDailySessions, currentDailySession, dailyInput, isDailyStreaming, dailyChatBoxRef,
           chosenPersonaId, chosenPersonaIds, chosenUserPersonaId, userPersonaList, personaList, personaTab,
-          editingPersonaId, personaForm, editingUserPersonaId, userPersonaForm, currentSession, currentDailySession,
-          currentTitle, backButtonText, handleStepBack, openPersonaManager, openSettings, saveSettings,
-          openAffectionBoard, openMidnightLetterModal, fetchMidnightLetter, selectScript, togglePersonaSelection,
-          confirmPersonaAndEnterGame, resumeSession, deleteSession, chooseOption, submitCustomAction, triggerPendingAction,
+          editingPersonaId, personaForm, editingUserPersonaId, userPersonaForm, currentSession, currentTitle, backButtonText,
+          handleStepBack, openPersonaManager, openSettings, saveSettings, openAffectionBoard, openMidnightLetterModal,
+          fetchMidnightLetter, getAffectionScore, getAffectionStage, getAffectionDesc, selectScript, togglePersonaSelection,
+          confirmPersonaAndEnterGame, resumeSession, deleteSession, submitCustomAction, triggerPendingAction,
           openDailyChatSetup, startNewDailyChat, resumeDailySession, submitDailyInput, triggerDailyPendingMessage, rewindDailyRound,
-          getPersonaName: pId => personaList.value.find(p => p.id === pId)?.name || '同伴',
-          getUserPersonaName: upId => userPersonaList.value.find(u => u.id === upId)?.name || '你',
-          activeChoices: computed(() => ["继续探险", "环顾四周"])
+          loadPersonaToEdit, resetEditingPersona, savePersonaCard, deletePersona, loadUserPersonaToEdit, resetEditingUserPersona,
+          saveUserPersonaCard, setDefaultUserPersona, quickStartDailyChatFromPersona,
+          getPersonaName: pId => personaList.value.find(p => p.id === pId)?.name || '同伴'
         };
       }
     }).mount('#app');
