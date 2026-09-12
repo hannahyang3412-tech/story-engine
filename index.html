@@ -14,12 +14,10 @@
 <body class="bg-slate-950 text-slate-100 antialiased select-none font-sans">
   <div id="app" class="h-[100dvh] max-w-md mx-auto flex flex-col bg-slate-900 shadow-2xl relative overflow-hidden">
 
-    <!-- ================= 阶段 1：开机封面 ================= -->
+    <!-- 开机封面 -->
     <section v-if="currentStep === 'boot'" class="h-full w-full flex flex-col justify-between items-center p-8 bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/40 relative z-50">
       <div class="w-full flex justify-end">
-        <button @click="openSettings" class="text-xs text-slate-500 hover:text-indigo-400 p-2">
-          ⚙️ 接口设置
-        </button>
+        <button @click="openSettings" class="text-xs text-slate-500 hover:text-indigo-400 p-2">⚙️ 接口设置</button>
       </div>
 
       <div class="text-center space-y-4 my-auto">
@@ -33,43 +31,39 @@
       </div>
 
       <div class="w-full pb-6">
-        <button 
-          @click="currentStep = 'mode_hub'" 
-          class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white rounded-2xl text-xs font-semibold tracking-widest transition shadow-lg shadow-indigo-500/25">
+        <button @click="currentStep = 'mode_hub'" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white rounded-2xl text-xs font-semibold tracking-widest transition shadow-lg shadow-indigo-500/25">
           启程进入
         </button>
       </div>
     </section>
 
-    <!-- 顶部通用状态栏 -->
+    <!-- 顶部状态栏 -->
     <header v-if="currentStep !== 'boot'" class="h-14 px-3 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-900/90 backdrop-blur z-20">
       <div class="flex items-center space-x-1 overflow-hidden">
         <button @click="handleStepBack" class="p-1.5 -ml-1 text-slate-300 hover:text-white flex items-center gap-1 shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
           <span class="text-xs font-medium">{{ backButtonText }}</span>
         </button>
-        <span class="text-xs font-bold text-slate-100 truncate w-24">{{ currentTitle }}</span>
+        <span class="text-xs font-bold text-slate-100 truncate w-28">{{ currentTitle }}</span>
       </div>
 
       <div class="flex items-center space-x-1.5 text-xs shrink-0">
-        <button @click="openPersonaManager" :class="currentStep === 'persona_mgr' ? 'bg-indigo-600 text-white' : 'text-slate-400 bg-slate-800/80'" class="hover:text-indigo-300 py-1.5 px-2 rounded-lg transition font-medium">人设</button>
-        <button @click="openSettings" :class="currentStep === 'settings' ? 'bg-indigo-600 text-white' : 'text-slate-400 bg-slate-800/80'" class="hover:text-indigo-300 py-1.5 px-2 rounded-lg transition font-medium">设置</button>
+        <button @click="openPersonaManager" :class="currentStep === 'persona_mgr' ? 'bg-indigo-600 text-white' : 'text-slate-400 bg-slate-800/80'" class="hover:text-indigo-300 py-1.5 px-2.5 rounded-lg transition font-medium">人设</button>
+        <button @click="openSettings" :class="currentStep === 'settings' ? 'bg-indigo-600 text-white' : 'text-slate-400 bg-slate-800/80'" class="hover:text-indigo-300 py-1.5 px-2.5 rounded-lg transition font-medium">设置</button>
       </div>
     </header>
 
     <!-- 主视口 -->
-    <main v-if="currentStep !== 'boot'" class="flex-1 overflow-hidden relative">
+    <main v-if="currentStep !== 'boot'" class="flex-1 overflow-hidden relative flex flex-col">
 
-      <!-- ================= 阶段 1.5：模式选择枢纽 ================= -->
+      <!-- 模式选择枢纽 -->
       <section v-show="currentStep === 'mode_hub'" class="h-full overflow-y-auto p-4 space-y-3.5 flex flex-col justify-center no-scrollbar">
         <div class="text-center space-y-0.5 mb-1">
           <h2 class="text-base font-bold text-white tracking-wider">选择体验空间</h2>
           <p class="text-[11px] text-slate-400">开启互动、查阅羁绊或查收TA的深夜心意</p>
         </div>
 
-        <div 
-          @click="currentStep = 'scripts'" 
-          class="bg-gradient-to-br from-amber-950/40 via-slate-900 to-indigo-950/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-1.5 group">
+        <div @click="currentStep = 'scripts'" class="bg-gradient-to-br from-amber-950/40 via-slate-900 to-indigo-950/50 border border-amber-500/30 hover:border-amber-400/60 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-1.5">
           <div class="flex items-center justify-between">
             <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold uppercase">跑团剧场</span>
             <span class="text-[9px] text-amber-400/80 font-mono">{{ activeSessions.length }} 存档</span>
@@ -78,9 +72,7 @@
           <p class="text-[11px] text-slate-300 leading-relaxed">主导式跑团、微光线索搜查、多伴侣修罗场冒险。</p>
         </div>
 
-        <div 
-          @click="openDailyChatSetup" 
-          class="bg-gradient-to-br from-purple-950/40 via-slate-900 to-pink-950/30 border border-purple-500/30 hover:border-purple-400/60 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-1.5 group">
+        <div @click="openDailyChatSetup" class="bg-gradient-to-br from-purple-950/40 via-slate-900 to-pink-950/30 border border-purple-500/30 hover:border-purple-400/60 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-1.5">
           <div class="flex items-center justify-between">
             <span class="text-[9px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold uppercase">随聊陪伴</span>
             <span class="text-[9px] text-purple-400/80 font-mono">{{ activeDailySessions.length }} 对话</span>
@@ -99,7 +91,7 @@
         </div>
       </section>
 
-      <!-- ================= 剧情板块：大厅 ================= -->
+      <!-- 剧本大厅 -->
       <section v-show="currentStep === 'scripts'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar">
         <div class="flex items-center justify-between px-1">
           <button @click="currentStep = 'ongoing'" class="text-xs text-indigo-300 hover:underline flex items-center gap-1">
@@ -107,172 +99,51 @@
           </button>
         </div>
 
-        <div 
-          @click="openCharAuthoredModal" 
-          class="bg-gradient-to-r from-rose-950/50 via-purple-950/50 to-slate-900 border border-rose-500/40 hover:border-rose-400 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold uppercase">角色反向带跑</span>
-            <span class="text-[10px] text-rose-400 font-mono">基于人设与日常记忆执笔</span>
-          </div>
-          <h2 class="text-base font-bold text-white flex items-center gap-1.5">
-            <span>💌 TA的心愿 · 为你定制专属剧本</span>
-          </h2>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            由 Char 依据自身执念、人设背景或日常闲聊线索，反向为你设计一场探险！
-          </p>
-        </div>
-
-        <div 
-          @click="openFreeModeDetail" 
-          class="bg-gradient-to-r from-purple-900/40 via-indigo-900/40 to-slate-900 border border-purple-500/40 hover:border-purple-400 rounded-2xl p-4 cursor-pointer transition shadow-lg space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold uppercase">自由沙盒</span>
-            <span class="text-[10px] text-purple-400 font-mono">无剧情枷锁</span>
-          </div>
-          <h2 class="text-base font-bold text-white flex items-center gap-1.5">
-            <span>✨ 完全自由模式 (自定义开篇)</span>
-          </h2>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            由你输入任意开篇情境与行动，同伴全心跟随你的剧情自由互动。
-          </p>
-        </div>
-
-        <div class="space-y-3 pt-1">
-          <div class="flex items-center justify-between px-1">
-            <span class="text-xs text-slate-400 font-semibold">📚 经典预设剧本库</span>
-            <span class="text-[11px] text-slate-500">共 {{ scripts.length }} 部</span>
-          </div>
-
-          <div v-for="script in scripts" :key="script.id" class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">{{ script.tag }}</span>
-              <span class="text-[10px] text-slate-500">{{ script.nodes.length }} 幕</span>
-            </div>
-            <h2 class="text-base font-bold text-white">{{ script.title }}</h2>
-            <p class="text-xs text-slate-400 leading-relaxed">{{ script.description }}</p>
-            <button @click="selectScript(script)" class="w-full py-2.5 bg-slate-700 hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition">
-              选择此剧本
-            </button>
-          </div>
+        <div v-for="script in scripts" :key="script.id" class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 space-y-3">
+          <h2 class="text-base font-bold text-white">{{ script.title }}</h2>
+          <p class="text-xs text-slate-400 leading-relaxed">{{ script.description }}</p>
+          <button @click="selectScript(script)" class="w-full py-2.5 bg-slate-700 hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition">选择此剧本</button>
         </div>
       </section>
 
-      <!-- ================= 剧情板块：存档列表 ================= -->
+      <!-- 存档列表 -->
       <section v-show="currentStep === 'ongoing'" class="h-full overflow-y-auto p-4 space-y-3 no-scrollbar">
-        <div class="flex items-center justify-between px-1">
-          <span class="text-xs text-indigo-300 font-semibold">⏳ 正在进行的探险存档</span>
-          <span class="text-[11px] text-slate-500">共 {{ activeSessions.length }} 个存档</span>
-        </div>
-
-        <div v-if="activeSessions.length === 0" class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-8 text-center space-y-3 my-4">
-          <p class="text-xs text-slate-400">当前没有正在进行的探险存档</p>
-          <button @click="currentStep = 'scripts'" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-medium transition">
-            前往挑选剧本
-          </button>
-        </div>
-
-        <div v-for="sess in activeSessions" :key="sess.id" class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-3.5 space-y-2">
-          <div class="flex items-center justify-between">
-            <span :class="sess.isFreeMode ? 'bg-purple-500/20 text-purple-300' : 'bg-indigo-500/20 text-indigo-300'" class="text-[10px] px-2 py-0.5 rounded-full font-medium">
-              {{ sess.isFreeMode ? '自由沙盒' : `第 ${(sess.currentNodeIndex || 0) + 1} 幕` }}
-            </span>
-            <span class="text-[10px] text-slate-400">
-              玩家: {{ getUserPersonaName(sess.userPersonaId) }} & 同行: {{ getSessionCompanionsName(sess) }}
-            </span>
-          </div>
-          <h3 class="text-sm font-bold text-white">{{ sess.title }}</h3>
-          <p v-if="sess.storySummary" class="text-[11px] text-slate-400 line-clamp-2">
-            线索: {{ sess.storySummary }}
-          </p>
+        <div v-if="activeSessions.length === 0" class="text-center py-12 text-xs text-slate-400">当前没有正在进行的探险存档</div>
+        <div v-for="sess in activeSessions" :key="sess.id" class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-3.5 space-y-2 text-xs">
+          <h3 class="font-bold text-white text-sm">{{ sess.title }}</h3>
           <div class="flex gap-2 pt-1">
-            <button @click="resumeSession(sess)" class="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-medium transition">
-              继续探险
-            </button>
-            <button @click="deleteSession(sess.id)" class="px-3 py-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-300 rounded-xl text-xs transition">
-              删除
-            </button>
+            <button @click="resumeSession(sess)" class="flex-1 py-2 bg-indigo-600 text-white rounded-xl">继续探险</button>
+            <button @click="deleteSession(sess.id)" class="px-3 py-2 bg-slate-800 text-red-300 rounded-xl">删除</button>
           </div>
         </div>
       </section>
 
-      <!-- ================= 剧情板块：选择人设与配置 ================= -->
-      <section v-show="currentStep === 'select_persona'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar">
-        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-3.5 space-y-1">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400">
-            {{ isFreeModeSelection ? '模式：自由沙盒' : '已选剧本' }}
-          </span>
-          <h2 class="text-sm font-bold text-white">{{ selectedScript?.title || '自定冒险世界' }}</h2>
-          <p v-if="selectedScript?.description" class="text-xs text-slate-400">{{ selectedScript.description }}</p>
+      <!-- 选人设配置 -->
+      <section v-show="currentStep === 'select_persona'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-3.5">
+          <h2 class="font-bold text-white text-sm">{{ selectedScript?.title || '自由沙盒世界' }}</h2>
         </div>
-
-        <div v-if="isFreeModeSelection" class="bg-slate-900/80 border border-purple-500/30 rounded-2xl p-3.5 space-y-2">
-          <label class="block text-xs font-semibold text-purple-300">起始剧情 / 舞台情境设定 (选填)</label>
-          <textarea v-model="freeModeCustomOpening" rows="2" placeholder="例如：深夜的画室突降暴雨、未来机甲仓库内..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none"></textarea>
-        </div>
-
         <div class="space-y-2">
-          <div class="flex items-center justify-between text-xs text-slate-400 px-1 font-semibold">
-            <span>👤 你的身份 (User Persona / 面具)</span>
-            <button @click="openPersonaManager" class="text-indigo-400 hover:underline text-[11px]">+ 管理身份</button>
-          </div>
+          <label class="block text-slate-400 font-semibold">👤 你的身份 (面具)</label>
           <div class="grid grid-cols-2 gap-2">
-            <div 
-              v-for="up in userPersonaList" :key="up.id"
-              @click="chosenUserPersonaId = up.id"
-              :class="chosenUserPersonaId === up.id ? 'border-indigo-500 bg-indigo-950/50 ring-1 ring-indigo-500' : 'border-slate-700 bg-slate-800/60'"
-              class="border rounded-xl p-2.5 cursor-pointer transition">
-              <div class="flex items-center justify-between">
-                <h4 class="text-xs font-bold text-white truncate">{{ up.name }}</h4>
-                <span v-if="chosenUserPersonaId === up.id" class="text-[10px] text-indigo-400 font-bold">✓</span>
-              </div>
-              <p class="text-[10px] text-slate-400 mt-1 truncate">{{ up.appearance }}</p>
-            </div>
+            <div v-for="up in userPersonaList" :key="up.id" @click="chosenUserPersonaId = up.id" :class="chosenUserPersonaId === up.id ? 'border-indigo-500 bg-indigo-950/50' : 'border-slate-700 bg-slate-800'" class="border rounded-xl p-2.5 cursor-pointer font-bold text-white">{{ up.name }}</div>
           </div>
         </div>
-
         <div class="space-y-2">
-          <div class="flex items-center justify-between text-xs text-slate-400 px-1 font-semibold">
-            <span>👥 同行同伴 (支持多选组建修罗场/小队)</span>
-            <span class="text-[10px] text-indigo-400">已选 {{ chosenPersonaIds.length }} 位同伴</span>
-          </div>
-
-          <div class="space-y-2">
-            <div 
-              v-for="p in personaList" :key="p.id"
-              @click="togglePersonaSelection(p.id)"
-              :class="chosenPersonaIds.includes(p.id) ? 'border-indigo-500 bg-indigo-950/50 ring-1 ring-indigo-500' : 'border-slate-700 bg-slate-800/60'"
-              class="border rounded-2xl p-3 cursor-pointer transition flex items-center justify-between">
-              <div class="space-y-0.5 max-w-[80%]">
-                <div class="flex items-center gap-2">
-                  <h4 class="text-xs font-bold text-white">{{ p.name }}</h4>
-                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-300">称呼你: {{ p.userNickname }}</span>
-                </div>
-                <p class="text-[11px] text-slate-400 line-clamp-1">{{ p.appearance }}</p>
-              </div>
-              <div class="shrink-0">
-                <span v-if="chosenPersonaIds.includes(p.id)" class="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[11px] font-bold">✓</span>
-                <span v-else class="w-5 h-5 rounded-full border border-slate-600 block"></span>
-              </div>
-            </div>
+          <label class="block text-slate-400 font-semibold">👥 同行同伴 (支持修罗场多选)</label>
+          <div v-for="p in personaList" :key="p.id" @click="togglePersonaSelection(p.id)" :class="chosenPersonaIds.includes(p.id) ? 'border-indigo-500 bg-indigo-950/50' : 'border-slate-700 bg-slate-800'" class="border rounded-xl p-3 cursor-pointer flex justify-between items-center">
+            <span class="font-bold text-white">{{ p.name }}</span>
+            <span>{{ chosenPersonaIds.includes(p.id) ? '✓' : '' }}</span>
           </div>
         </div>
-
-        <button 
-          @click="confirmPersonaAndEnterGame" 
-          :disabled="chosenPersonaIds.length === 0"
-          class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-2xl text-xs font-semibold tracking-wider transition shadow-lg mt-2">
-          与 {{ getSelectedPersonaNames() }} 启程
-        </button>
+        <button @click="confirmPersonaAndEnterGame" class="w-full py-3 bg-indigo-600 text-white rounded-2xl font-semibold shadow-lg">启程</button>
       </section>
 
-      <!-- ================= 剧情板块：剧本演绎进行中 (完整功能区) ================= -->
+      <!-- 剧本推演区 (包含篇幅选择与上下文轮数) -->
       <section v-show="currentStep === 'game'" class="h-full flex flex-col relative">
-        <!-- 篇幅与上下文顶栏 -->
         <div class="bg-slate-800/95 px-3 py-1.5 border-b border-slate-700/60 flex items-center justify-between text-[11px] flex-wrap gap-1.5">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-amber-300 font-medium text-[10px]">
-              {{ currentSession?.isFreeMode ? '自由推演' : `第 ${(currentSession?.currentNodeIndex || 0) + 1} 幕` }}
-            </span>
+            <span class="text-amber-300 font-medium text-[10px]">第 1 幕</span>
             <button @click="showStyleModal = true" class="px-2 py-0.5 bg-indigo-950/80 border border-indigo-500/40 text-indigo-300 rounded-md text-[10px]">
               <span>✍️ {{ getCurrentStyleName() }}</span>
             </button>
@@ -299,7 +170,6 @@
           </div>
         </div>
 
-        <!-- 辅助工具栏 (背包、备忘、回退、重开) -->
         <div class="bg-slate-900/90 px-3 py-1.5 border-b border-slate-800 flex items-center justify-between text-[11px] flex-wrap gap-1.5 shadow-sm">
           <div class="flex items-center gap-1.5">
             <button @click="showInventoryModal = true" class="px-2.5 py-1 bg-amber-950/70 hover:bg-amber-900 border border-amber-500/50 text-amber-300 rounded-lg text-[10px] font-semibold flex items-center gap-1">
@@ -347,7 +217,6 @@
             <!-- AI 引擎演进 -->
             <div v-else-if="item.type === 'engine'" class="space-y-2">
               <div v-if="!item.isEditing" class="space-y-2">
-                <!-- 生成的插图显示 -->
                 <div v-if="item.images && item.images.length > 0" class="grid gap-2" :class="item.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'">
                   <div v-for="(img, imgIdx) in item.images" :key="imgIdx" class="relative rounded-2xl overflow-hidden border border-slate-700 shadow bg-slate-950">
                     <img :src="img.url" @click="previewImage(img.url)" class="w-full object-cover max-h-48 cursor-zoom-in" />
@@ -370,14 +239,12 @@
 
                   <div class="whitespace-pre-wrap">{{ item.storyText }}</div>
 
-                  <!-- 搜查到的线索收录按钮 -->
                   <div v-if="item.discoveredClues && item.discoveredClues.length > 0" class="pt-2 border-t border-slate-700/60 flex flex-wrap gap-1.5">
                     <button v-for="(clue, cIdx) in item.discoveredClues" :key="cIdx" @click="addToInventory(clue)" class="px-2 py-1 bg-amber-950/60 border border-amber-500/40 text-amber-200 rounded-lg text-[10px]">
                       📦 收录【{{ clue.name }}】
                     </button>
                   </div>
 
-                  <!-- 同伴内心心声窥视 -->
                   <div v-if="item.companionPOV" class="mt-2 p-2.5 bg-purple-950/40 border border-purple-500/40 rounded-xl space-y-1">
                     <div class="text-[10px] text-purple-300 font-semibold flex justify-between">
                       <span>👀 【同伴内心独白】</span>
@@ -413,6 +280,7 @@
             </div>
           </div>
 
+          <!-- 流式推演占位符 -->
           <div v-if="isStreaming" class="p-3 bg-slate-800/80 border border-indigo-500/40 rounded-2xl space-y-2 text-xs">
             <div class="flex justify-between items-center text-indigo-300">
               <span class="animate-pulse">剧情推演中...</span>
@@ -422,7 +290,7 @@
           </div>
         </div>
 
-        <!-- 底部行动区 -->
+        <!-- 底部推演行动区 -->
         <footer class="p-3 bg-slate-900 border-t border-slate-800 shrink-0 space-y-2">
           <div v-if="currentSession?.pendingAction && !isStreaming" class="p-2 bg-indigo-950/80 border border-indigo-500/50 rounded-xl flex items-center justify-between">
             <span class="text-[11px] text-indigo-200 truncate max-w-[240px]">已记录你的选择，等待接收回复...</span>
@@ -431,6 +299,7 @@
             </button>
           </div>
 
+          <!-- 选项按钮组 -->
           <div v-if="!currentSession?.isFreeMode && activeChoices.length > 0 && !isStreaming && !currentSession?.pendingAction" class="grid grid-cols-1 gap-1.5">
             <button 
               v-for="(choice, cIdx) in activeChoices" :key="cIdx"
@@ -457,12 +326,10 @@
         </footer>
       </section>
 
-      <!-- ================= 阶段：日常聊天 - 准备页 ================= -->
+      <!-- 日常聊天准备页 -->
       <section v-show="currentStep === 'daily_setup'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar">
         <div class="bg-gradient-to-r from-purple-950/40 to-slate-900 border border-purple-500/30 rounded-2xl p-4 space-y-1">
-          <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
-            <span>💬 发起日常随聊</span>
-          </h2>
+          <h2 class="text-sm font-bold text-white flex items-center gap-1.5">💬 发起日常随聊</h2>
           <p class="text-xs text-slate-400">选择属于你们的身份与闲暇情境。</p>
         </div>
 
@@ -483,7 +350,7 @@
         </div>
 
         <div class="space-y-2">
-          <label class="block text-xs text-slate-400 px-1 font-semibold">👤 你的身份 (User Persona / 面具)</label>
+          <label class="block text-xs text-slate-400 px-1 font-semibold">👤 你的身份 (面具)</label>
           <div class="grid grid-cols-2 gap-2">
             <div 
               v-for="up in userPersonaList" :key="up.id"
@@ -518,7 +385,7 @@
         </button>
       </section>
 
-      <!-- ================= 阶段：日常聊天室 ================= -->
+      <!-- 日常聊天室 -->
       <section v-show="currentStep === 'daily_chat'" class="h-full flex flex-col relative">
         <div class="bg-slate-800/90 px-3 py-2 border-b border-slate-700/60 flex items-center justify-between text-xs flex-wrap gap-1">
           <div class="flex items-center gap-2">
@@ -573,7 +440,7 @@
         </footer>
       </section>
 
-      <!-- ================= 人设中心 (已包含 Seed 与参考图垫图) ================= -->
+      <!-- 人设管理中心 -->
       <section v-show="currentStep === 'persona_mgr'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar">
         <div class="grid grid-cols-2 gap-2 bg-slate-800/80 p-1 rounded-xl">
           <button @click="personaTab = 'companion'" :class="personaTab === 'companion' ? 'bg-indigo-600 text-white' : 'text-slate-400'" class="py-2 text-xs font-semibold rounded-lg">👥 同伴伴侣 (Char 人设)</button>
@@ -605,7 +472,6 @@
             </div>
           </div>
 
-          <!-- 编辑表单（带 Seed 和垫图上传） -->
           <div id="persona-edit-form" class="bg-slate-900/80 p-4 border border-slate-800 rounded-2xl space-y-2.5">
             <div class="flex items-center justify-between">
               <h3 class="text-xs font-bold text-amber-400">{{ editingPersonaId ? `✏️ 正在编辑同伴：${personaForm.name}` : '➕ 新建同伴人设' }}</h3>
@@ -621,7 +487,6 @@
               <textarea v-model="personaForm.personaPrompt" rows="4" placeholder="在此粘贴长篇角色设定卡、背景经历、性格特征..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none leading-relaxed"></textarea>
             </div>
 
-            <!-- 生图绑定区：Seed 与 参考图垫图 -->
             <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-2 text-xs">
               <div class="font-semibold text-indigo-300">🎨 同伴专属生图参数</div>
               <div class="grid grid-cols-2 gap-2">
@@ -649,7 +514,6 @@
           </div>
         </div>
 
-        <!-- 身份面具管理 -->
         <div v-show="personaTab === 'user'" class="space-y-4">
           <div class="space-y-2">
             <div class="flex items-center justify-between text-xs text-slate-400 px-1 font-semibold">
@@ -690,32 +554,80 @@
         </div>
       </section>
 
-      <!-- ================= 接口设置 ================= -->
+      <!-- 接口设置 (完整恢复模型拉取与多预设管理) -->
       <section v-show="currentStep === 'settings'" class="h-full overflow-y-auto p-4 space-y-4 no-scrollbar text-xs">
-        <div class="space-y-3 bg-slate-800 p-4 rounded-2xl">
-          <h3 class="font-bold text-amber-400">⚙️ 文本模型 API 配置</h3>
-          <input v-model="settings.baseUrl" placeholder="Base URL" class="w-full bg-slate-950 rounded p-2 text-white" />
-          <input v-model="settings.apiKey" type="password" placeholder="API Key" class="w-full bg-slate-950 rounded p-2 text-white font-mono" />
-          <input v-model="settings.model" placeholder="Model Name" class="w-full bg-slate-950 rounded p-2 text-white" />
+        <!-- 文本模型配置 -->
+        <div class="space-y-2.5 bg-slate-800/80 border border-slate-700 p-3.5 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-amber-400">⚙️ 文本模型 API 预设方案管理</h3>
+            <span class="text-[10px] text-indigo-400 font-mono">{{ apiPresets.length }} 个预设</span>
+          </div>
+
+          <div class="flex gap-2">
+            <select v-model="selectedPresetId" @change="applyPreset(selectedPresetId)" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white">
+              <option v-for="pre in apiPresets" :key="pre.id" :value="pre.id">{{ pre.name }}</option>
+            </select>
+            <button @click="deleteCurrentPreset" :disabled="apiPresets.length <= 1" class="px-3 py-1.5 bg-slate-700 text-red-400 rounded-xl disabled:opacity-40">删除</button>
+          </div>
+
+          <div class="flex gap-2 pt-1">
+            <input v-model="newPresetName" placeholder="新预设名称" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white" />
+            <button @click="saveAsNewPreset" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl">保存预设</button>
+          </div>
+
+          <div class="border-t border-slate-700/60 pt-2 space-y-2">
+            <input v-model="settings.baseUrl" placeholder="Base URL (例如: https://api.uu6.top/)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white" />
+            <input v-model="settings.apiKey" type="password" placeholder="API Key" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-mono" />
+            
+            <button @click="fetchModelList" :disabled="isFetchingModels" class="w-full py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-medium shadow">
+              {{ isFetchingModels ? '正在拉取模型中...' : '拉取模型列表' }}
+            </button>
+            
+            <select v-if="modelList.length > 0" v-model="settings.model" class="w-full bg-slate-900 border border-indigo-500/50 rounded-xl px-3 py-1.5 text-amber-200">
+              <option v-for="m in modelList" :key="m" :value="m">{{ m }}</option>
+            </select>
+            
+            <input v-model="settings.model" placeholder="Model Name (如: gemini-2.5-flash)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white" />
+          </div>
         </div>
 
-        <div class="space-y-3 bg-slate-800 p-4 rounded-2xl">
-          <h3 class="font-bold text-amber-400">🎨 生图引擎配置</h3>
-          <div class="grid grid-cols-2 gap-2">
+        <!-- 生图引擎配置 -->
+        <div class="space-y-2.5 bg-slate-800/80 border border-slate-700 p-3.5 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-amber-400">🎨 生图引擎预设方案管理</h3>
+            <span class="text-[10px] text-amber-300 font-mono">{{ imgPresets.length }} 个预设</span>
+          </div>
+
+          <div class="flex gap-2">
+            <select v-model="selectedImgPresetId" @change="applyImgPreset(selectedImgPresetId)" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white">
+              <option v-for="pre in imgPresets" :key="pre.id" :value="pre.id">{{ pre.name }}</option>
+            </select>
+            <button @click="deleteCurrentImgPreset" :disabled="imgPresets.length <= 1" class="px-3 py-1.5 bg-slate-700 text-red-400 rounded-xl disabled:opacity-40">删除</button>
+          </div>
+
+          <div class="flex gap-2 pt-1">
+            <input v-model="newImgPresetName" placeholder="新生图预设名" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white" />
+            <button @click="saveAsNewImgPreset" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl">保存预设</button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 mt-2">
             <button type="button" @click="imageConfig.provider = 'public'" :class="imageConfig.provider === 'public' ? 'bg-amber-600 text-white font-bold' : 'bg-slate-900 text-slate-400'" class="py-1.5 rounded-xl border border-slate-700">公开免费 (Flux)</button>
             <button type="button" @click="imageConfig.provider = 'custom'" :class="imageConfig.provider === 'custom' ? 'bg-amber-600 text-white font-bold' : 'bg-slate-900 text-slate-400'" class="py-1.5 rounded-xl border border-slate-700">自定义生图 API</button>
           </div>
-          <div v-if="imageConfig.provider === 'custom'" class="space-y-2 pt-2 border-t border-slate-700">
-            <input v-model="imageConfig.baseUrl" placeholder="生图 Base URL" class="w-full bg-slate-950 rounded p-2 text-white" />
-            <input v-model="imageConfig.apiKey" type="password" placeholder="生图 API Key" class="w-full bg-slate-950 rounded p-2 text-white font-mono" />
-            <input v-model="imageConfig.model" placeholder="生图模型 (如: dall-e-3)" class="w-full bg-slate-950 rounded p-2 text-white" />
+
+          <div v-if="imageConfig.provider === 'custom'" class="space-y-2 pt-2 border-t border-slate-700/60">
+            <input v-model="imageConfig.baseUrl" placeholder="生图 Base URL" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white" />
+            <input v-model="imageConfig.apiKey" type="password" placeholder="生图 API Key" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-mono" />
+            <input v-model="imageConfig.model" placeholder="生图模型 (如: dall-e-3)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white" />
           </div>
         </div>
 
-        <button @click="saveSettings" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium transition">保存全部配置</button>
+        <button @click="saveSettings" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium transition shadow-lg">
+          保存全部配置与预设
+        </button>
       </section>
 
-      <!-- ================= 弹窗集合 ================= -->
+      <!-- 弹窗合集 -->
       <!-- 好感看板 -->
       <div v-if="showAffectionModal" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-indigo-500/40 rounded-3xl p-4 w-full max-w-sm max-h-[85%] flex flex-col space-y-3 shadow-2xl overflow-y-auto no-scrollbar text-xs">
@@ -748,7 +660,7 @@
         </div>
       </div>
 
-      <!-- 随身背包 -->
+      <!-- 背包 -->
       <div v-if="showInventoryModal" class="absolute inset-0 bg-black/70 backdrop-blur-sm z-30 flex flex-col justify-end">
         <div class="bg-slate-900 border-t border-slate-700 rounded-t-2xl p-4 max-h-[80%] flex flex-col space-y-3">
           <div class="flex justify-between items-center"><h3 class="text-sm font-bold text-amber-400">🎒 随身背包</h3><button @click="showInventoryModal = false" class="text-slate-400 text-xs">关闭</button></div>
@@ -809,6 +721,8 @@
   <script>
     const { createApp, ref, reactive, computed, nextTick, watch } = Vue;
 
+    const WORKER_PROXY = 'https://moxinglaqu.lucyabbyhannah.workers.dev/?url=';
+
     const DEFAULT_PERSONAS = [
       { id: "p_shen", name: "沈知韫", userNickname: "小朋友", appearance: "清冷出尘，黑色微卷长发，深色风衣。", traits: "从容敏锐、克制护短", personaPrompt: "性格清冷自持但极度护短，习惯检查细节。", defaultSeed: 12345, refImage: "" },
       { id: "p_li", name: "黎深", userNickname: "乖宝", appearance: "清冷矜贵，金丝眼镜，笔挺深色大衣。", traits: "表面严谨克制，情绪内敛", personaPrompt: "严谨克制，对玩家怀有无可奈何的纵容与细致关照。", defaultSeed: 67890, refImage: "" }
@@ -821,7 +735,7 @@
     createApp({
       setup() {
         const currentStep = ref('boot');
-        const previousStep = ref('mode_hub'); // 用于精准回溯上一页面，防止卡死
+        const previousStep = ref('mode_hub');
         const customInput = ref('');
         const isStreaming = ref(false);
         const isActionLocked = ref(false);
@@ -865,8 +779,6 @@
           }
         ]);
         const selectedScript = ref(scripts.value[0]);
-        const isFreeModeSelection = ref(false);
-        const freeModeCustomOpening = ref('');
 
         const activeSessions = ref(JSON.parse(localStorage.getItem('se_sessions')) || []);
         const currentSessionId = ref(localStorage.getItem('se_curr_sess_id') || null);
@@ -878,6 +790,14 @@
           model: localStorage.getItem('se_s_model') || 'gemini-2.5-flash'
         });
 
+        // 文本模型预设
+        const apiPresets = ref(JSON.parse(localStorage.getItem('se_api_presets') || JSON.stringify([
+          { id: 'pre_default', name: '默认中转站', baseUrl: settings.baseUrl, apiKey: settings.apiKey, model: settings.model }
+        ])));
+        const selectedPresetId = ref(localStorage.getItem('se_selected_preset_id') || 'pre_default');
+        const newPresetName = ref('');
+
+        // 生图预设
         const savedImgConfig = JSON.parse(localStorage.getItem('se_img_config') || '{}');
         const imageConfig = reactive({
           provider: savedImgConfig.provider || 'public',
@@ -886,6 +806,16 @@
           model: savedImgConfig.model || 'dall-e-3'
         });
 
+        const imgPresets = ref(JSON.parse(localStorage.getItem('se_img_presets') || JSON.stringify([
+          { id: 'img_default', name: '公共免费 (Flux)', provider: 'public', baseUrl: '', apiKey: '', model: 'dall-e-3' }
+        ])));
+        const selectedImgPresetId = ref(localStorage.getItem('se_selected_img_preset_id') || 'img_default');
+        const newImgPresetName = ref('');
+
+        const isFetchingModels = ref(false);
+        const modelList = ref(JSON.parse(localStorage.getItem('se_model_list') || '[]'));
+
+        // 日常随聊
         const activeDailySessions = ref(JSON.parse(localStorage.getItem('se_daily_sessions')) || []);
         const currentDailySessionId = ref(localStorage.getItem('se_curr_daily_id') || null);
         const dailyInput = ref('');
@@ -957,7 +887,6 @@
           if (chatBoxRef.value) chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight;
         };
 
-        // 彻底修复返回逻辑，杜绝卡死
         const handleStepBack = () => {
           if (currentStep.value === 'persona_mgr' || currentStep.value === 'settings') {
             currentStep.value = (previousStep.value && previousStep.value !== currentStep.value) ? previousStep.value : 'mode_hub';
@@ -982,11 +911,73 @@
           currentStep.value = 'settings';
         };
 
+        const normalizeBaseUrl = raw => (raw || '').trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '').replace(/\/models$/, '');
+        const cleanApiKey = () => (settings.apiKey || '').trim().replace(/^bearer\s+/i, '');
+        const workerFetch = async (target, opts = {}) => await fetch(`${WORKER_PROXY}${encodeURIComponent(target)}`, opts);
+
+        // 预设管理与模型拉取
+        const applyPreset = pId => {
+          const found = apiPresets.value.find(p => p.id === pId);
+          if (found) { settings.baseUrl = found.baseUrl; settings.apiKey = found.apiKey; settings.model = found.model; selectedPresetId.value = pId; }
+        };
+        const saveAsNewPreset = () => {
+          if (!newPresetName.value.trim()) return;
+          apiPresets.value.push({ id: 'pre_' + Date.now(), name: newPresetName.value.trim(), baseUrl: settings.baseUrl, apiKey: settings.apiKey, model: settings.model });
+          newPresetName.value = ''; alert('预设保存成功！');
+          localStorage.setItem('se_api_presets', JSON.stringify(apiPresets.value));
+        };
+        const deleteCurrentPreset = () => {
+          if (apiPresets.value.length > 1) {
+            apiPresets.value = apiPresets.value.filter(p => p.id !== selectedPresetId.value);
+            applyPreset(apiPresets.value[0].id);
+            localStorage.setItem('se_api_presets', JSON.stringify(apiPresets.value));
+          }
+        };
+
+        const applyImgPreset = pId => {
+          const found = imgPresets.value.find(p => p.id === pId);
+          if (found) { Object.assign(imageConfig, found); selectedImgPresetId.value = pId; }
+        };
+        const saveAsNewImgPreset = () => {
+          if (!newImgPresetName.value.trim()) return;
+          imgPresets.value.push({ id: 'img_' + Date.now(), name: newImgPresetName.value.trim(), ...imageConfig });
+          newImgPresetName.value = ''; alert('生图预设保存成功！');
+          localStorage.setItem('se_img_presets', JSON.stringify(imgPresets.value));
+        };
+        const deleteCurrentImgPreset = () => {
+          if (imgPresets.value.length > 1) {
+            imgPresets.value = imgPresets.value.filter(p => p.id !== selectedImgPresetId.value);
+            applyImgPreset(imgPresets.value[0].id);
+            localStorage.setItem('se_img_presets', JSON.stringify(imgPresets.value));
+          }
+        };
+
+        const fetchModelList = async () => {
+          const key = cleanApiKey();
+          if (!key) { alert('请先填入有效的 API Key！'); return; }
+          isFetchingModels.value = true;
+          try {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/models`, { headers: { 'Authorization': `Bearer ${key}` } });
+            const resJson = await resp.json();
+            let list = Array.isArray(resJson.data) ? resJson.data.map(i => i.id) : [];
+            if (list.length > 0) {
+              modelList.value = list;
+              localStorage.setItem('se_model_list', JSON.stringify(list));
+              alert(`成功拉取到 ${list.length} 个可用模型！可在下方下拉框直接选取。`);
+            } else { alert('未能获取到模型列表，请确认 Base URL 是否支持 /v1/models 路径。'); }
+          } catch(e) { alert(`拉取失败：${e.message}`); } finally { isFetchingModels.value = false; }
+        };
+
         const saveSettings = () => {
+          settings.baseUrl = normalizeBaseUrl(settings.baseUrl);
+          settings.apiKey = cleanApiKey();
           localStorage.setItem('se_s_url', settings.baseUrl);
           localStorage.setItem('se_s_key', settings.apiKey);
           localStorage.setItem('se_s_model', settings.model);
           localStorage.setItem('se_img_config', JSON.stringify(imageConfig));
+          localStorage.setItem('se_api_presets', JSON.stringify(apiPresets.value));
+          localStorage.setItem('se_img_presets', JSON.stringify(imgPresets.value));
           alert('配置已成功保存！');
           handleStepBack();
         };
@@ -1020,12 +1011,15 @@
         };
 
         const fetchMidnightLetter = async () => {
+          const key = cleanApiKey();
+          if (!key) { openSettings(); return; }
           isGeneratingLetter.value = true;
           const author = personaList.value.find(p => p.id === letterAuthorId.value) || personaList.value[0];
           try {
-            const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/chat/completions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
               body: JSON.stringify({
                 model: settings.model,
                 messages: [{ role: 'user', content: `你扮演同伴【${author.name}】（设定：${author.personaPrompt || author.traits}）。在深夜万籁俱寂时，给玩家写下一封克制深情的亲笔信，字数150-200字左右。` }],
@@ -1041,7 +1035,7 @@
           }
         };
 
-        // 人设管理（Seed与垫图参考图）
+        // 人设管理
         const handlePersonaImageUpload = e => {
           const file = e.target.files[0];
           if (!file) return;
@@ -1124,11 +1118,8 @@
           startNewDailyChat();
         };
 
-        // 跑团与推演
-        const selectScript = script => { isFreeModeSelection.value = false; selectedScript.value = script; currentStep.value = 'select_persona'; };
-        const openFreeModeDetail = () => { isFreeModeSelection.value = true; freeModeCustomOpening.value = ''; currentStep.value = 'select_persona'; };
-        const openCharAuthoredModal = () => { alert('已将TA的心愿剧本载入'); };
-
+        // 跑团与流式推演
+        const selectScript = script => { selectedScript.value = script; currentStep.value = 'select_persona'; };
         const togglePersonaSelection = pId => {
           if (chosenPersonaIds.value.includes(pId)) {
             if (chosenPersonaIds.value.length > 1) chosenPersonaIds.value = chosenPersonaIds.value.filter(id => id !== pId);
@@ -1138,15 +1129,14 @@
         const confirmPersonaAndEnterGame = () => {
           const newSessId = 'sess_' + Date.now();
           const newSession = {
-            id: newSessId, isFreeMode: isFreeModeSelection.value,
+            id: newSessId, isFreeMode: false,
             companionIds: [...chosenPersonaIds.value], userPersonaId: chosenUserPersonaId.value,
-            title: isFreeModeSelection.value ? '自由冒险沙盒' : selectedScript.value.title,
-            currentNodeIndex: 0, storySummary: '', targetWordCount: 1500, contextRounds: 5,
+            title: selectedScript.value.title, currentNodeIndex: 0, storySummary: '', targetWordCount: 1500, contextRounds: 5,
             inventory: [], selectedStyleId: 'st_1',
             gameLogs: [{
               type: 'engine',
-              storyText: isFreeModeSelection.value ? (freeModeCustomOpening.value || '【自由模式】：四周弥漫着莫名的寂静...') : '【序幕】：荒废百年的尖顶古宅深立于浓雾之中。生锈铁门虚掩，红眼渡鸦正注视着你们二人。',
-              choices: isFreeModeSelection.value ? [] : [...selectedScript.value.nodes[0].choices],
+              storyText: '【序幕】：荒废百年的尖顶古宅深立于浓雾之中。生锈铁门虚掩，红眼渡鸦正注视着你们二人。',
+              choices: [...selectedScript.value.nodes[0].choices],
               images: [], discoveredClues: [], companionPOV: ''
             }]
           };
@@ -1160,7 +1150,7 @@
         const deleteSession = sessId => { activeSessions.value = activeSessions.value.filter(s => s.id !== sessId); };
 
         const executeAction = actionText => {
-          if (!currentSession.value) return;
+          if (!currentSession.value || isStreaming.value) return;
           currentSession.value.gameLogs.push({ type: 'player', text: actionText, isEditing: false });
           currentSession.value.pendingAction = true;
           scrollToBottom();
@@ -1168,6 +1158,9 @@
 
         const triggerPendingAction = async () => {
           if (!currentSession.value || isStreaming.value) return;
+          const key = cleanApiKey();
+          if (!key) { openSettings(); return; }
+
           currentSession.value.pendingAction = false;
           isStreaming.value = true;
           streamingRawText.value = '';
@@ -1175,7 +1168,8 @@
           streamInterval = setInterval(() => streamElapsed.value += 0.1, 100);
 
           const companions = personaList.value.filter(p => (currentSession.value.companionIds || []).includes(p.id));
-          const compPrompts = companions.map(c => `【同伴·${c.name}】（称呼玩家：${c.userNickname || '你'}，人设：${c.personaPrompt || c.traits}）`).join('\n');
+          const compPrompts = companions.map(c => `【同伴·${c.name}】（称呼玩家：【${c.userNickname || '你'}】，核心人设准则：${c.personaPrompt || c.traits}）`).join('\n');
+          const targetWords = currentSession.value.targetWordCount || 1500;
           const rounds = currentSession.value.contextRounds || 5;
 
           const history = [];
@@ -1186,21 +1180,42 @@
 
           const systemPrompt = `你是一个顶级互动小说跑团引擎。
 【同伴人设核心】：\n${compPrompts}
-【要求】：字数大约 ${currentSession.value.targetWordCount || 1500} 字。文末必须输出 <<<CHOICES>>> 并提供3个行动选项。`;
+【要求】：
+1. 深入刻画同伴与玩家的互动动作、微表情及眼神交流。
+2. 篇幅大约 ${targetWords} 字。
+3. 文末必须强制输出 <<<CHOICES>>> 换行并给出 3 个后续行动选项（1. 2. 3.）。`;
 
           try {
-            const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/chat/completions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
               body: JSON.stringify({
                 model: settings.model,
                 messages: [{ role: 'system', content: systemPrompt }, ...history.slice(-rounds * 2)],
+                stream: true,
                 temperature: 0.8
               })
             });
-            const data = await resp.json();
-            const fullText = data.choices?.[0]?.message?.content || '（继续向前迈进...）';
 
+            const reader = resp.body.getReader();
+            const decoder = new TextDecoder();
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              const chunk = decoder.decode(value, { stream: true });
+              for (const line of chunk.split('\n')) {
+                if (line.trim().startsWith('data: ') && line.trim() !== 'data: [DONE]') {
+                  try {
+                    const parsed = JSON.parse(line.trim().replace('data: ', ''));
+                    streamingRawText.value += parsed.choices?.[0]?.delta?.content || '';
+                    scrollToBottom();
+                  } catch(e) {}
+                }
+              }
+            }
+
+            const fullText = streamingRawText.value;
             let storyPart = fullText, choicesList = [];
             if (fullText.includes('<<<CHOICES>>>')) {
               const parts = fullText.split('<<<CHOICES>>>');
@@ -1209,13 +1224,14 @@
             }
 
             currentSession.value.gameLogs.push({
-              type: 'engine', storyText: storyPart, choices: choicesList, images: [], discoveredClues: [], companionPOV: ''
+              type: 'engine', storyText: storyPart || '（推演推进中...）', choices: choicesList, images: [], discoveredClues: [], companionPOV: ''
             });
           } catch(e) {
-            alert('推演请求失败，请检查网络与API配置。');
+            alert(`推演请求失败：${e.message}`);
           } finally {
             clearInterval(streamInterval);
             isStreaming.value = false;
+            streamingRawText.value = '';
             scrollToBottom();
           }
         };
@@ -1257,11 +1273,14 @@
 
         // 微光线索、心声、插图
         const searchMicroCues = async item => {
+          const key = cleanApiKey();
+          if (!key) return;
           item.isSearchingClues = true;
           try {
-            const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/chat/completions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
               body: JSON.stringify({
                 model: settings.model,
                 messages: [{ role: 'user', content: `从以下文本中提取1-2个物品线索，格式必须严格为JSON数组：[{"name":"线索名","desc":"简述"}]\n${item.storyText}` }]
@@ -1274,11 +1293,14 @@
 
         const toggleCompanionPOV = async item => {
           if (item.companionPOV) { item.companionPOV = ''; return; }
+          const key = cleanApiKey();
+          if (!key) return;
           item.isLoadingPOV = true;
           try {
-            const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/chat/completions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
               body: JSON.stringify({
                 model: settings.model,
                 messages: [{ role: 'user', content: `用第一人称简短写出同伴在这一刻的内心所想与克制的心绪：\n${item.storyText}` }]
@@ -1310,11 +1332,14 @@
         const previewImage = url => previewImgUrl.value = url;
 
         const generateAiSummary = async () => {
+          const key = cleanApiKey();
+          if (!key) return;
           isSummarizing.value = true;
           try {
-            const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/chat/completions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
               body: JSON.stringify({
                 model: settings.model,
                 messages: [{ role: 'user', content: `总结以下剧情线索要点，控制在100字：\n${currentSession.value.gameLogs.map(l => l.storyText || l.text).join('\n')}` }]
@@ -1325,7 +1350,7 @@
           } catch(e) {} finally { isSummarizing.value = false; }
         };
 
-        // 日常随聊方法
+        // 日常随聊
         const openDailyChatSetup = () => { currentStep.value = 'daily_setup'; };
         const startNewDailyChat = () => {
           const newId = 'daily_' + Date.now();
@@ -1351,13 +1376,17 @@
 
         const triggerDailyPendingMessage = async () => {
           if (!currentDailySession.value || isDailyStreaming.value) return;
+          const key = cleanApiKey();
+          if (!key) { openSettings(); return; }
+
           currentDailySession.value.pendingMessage = false;
           isDailyStreaming.value = true;
           const p = personaList.value.find(item => item.id === currentDailySession.value.personaId) || personaList.value[0];
           try {
-            const resp = await fetch(`https://moxinglaqu.lucyabbyhannah.workers.dev/?url=${encodeURIComponent(settings.baseUrl.replace(/\/+$/, '') + '/v1/chat/completions')}`, {
+            const base = normalizeBaseUrl(settings.baseUrl);
+            const resp = await workerFetch(`${base}/v1/chat/completions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey.trim()}` },
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
               body: JSON.stringify({
                 model: settings.model,
                 messages: [
@@ -1378,31 +1407,30 @@
         const getCurrentStyleName = () => customWritingStyles.value.find(s => s.id === currentSession.value?.selectedStyleId)?.name || '默认文风';
         const getPersonaName = pId => personaList.value.find(p => p.id === pId)?.name || '同伴';
         const getUserPersonaName = upId => userPersonaList.value.find(u => u.id === upId)?.name || '你';
-        const getSelectedPersonaNames = () => chosenPersonaIds.value.map(id => getPersonaName(id)).join(' & ');
-        const getSessionCompanionsName = sess => (sess.companionIds || []).map(id => getPersonaName(id)).join(' & ');
 
         return {
           currentStep, previousStep, customInput, isStreaming, isActionLocked, streamElapsed, streamingCleanText,
           chatBoxRef, showAffectionModal, showLetterModal, showInventoryModal, showSummaryModal, showStyleModal,
           showImageModal, previewImgUrl, isSummarizing, isGeneratingImageNow, imageGenOptions,
           letterAuthorId, currentMidnightLetter, isGeneratingLetter, customWritingStyles, scripts, selectedScript,
-          isFreeModeSelection, freeModeCustomOpening, activeSessions, currentSessionId, currentSession,
+          activeSessions, currentSessionId, currentSession,
           settings, imageConfig, activeDailySessions, currentDailySessionId, currentDailySession, dailyInput, isDailyStreaming,
           dailyChatBoxRef, personaList, userPersonaList, chosenPersonaId, chosenPersonaIds, chosenUserPersonaId,
           personaTab, editingPersonaId, personaForm, editingUserPersonaId, userPersonaForm,
-          currentTitle, backButtonText, activeChoices, canRewind,
+          apiPresets, selectedPresetId, newPresetName, imgPresets, selectedImgPresetId, newImgPresetName,
+          isFetchingModels, modelList, currentTitle, backButtonText, activeChoices, canRewind,
           handleStepBack, openPersonaManager, openSettings, saveSettings, openAffectionBoard, openMidnightLetterModal,
           fetchMidnightLetter, getAffectionScore, getAffectionStage, getAffectionDesc, handlePersonaImageUpload,
           loadPersonaToEdit, resetEditingPersona, savePersonaCard, deletePersona, loadUserPersonaToEdit,
           resetEditingUserPersona, saveUserPersonaCard, setDefaultUserPersona, quickStartDailyChatFromPersona,
-          selectScript, openFreeModeDetail, openCharAuthoredModal, togglePersonaSelection, confirmPersonaAndEnterGame,
-          resumeSession, deleteSession, chooseOption, submitCustomAction, triggerPendingAction, startEdit,
-          cancelEdit, saveAndRegeneratePlayer, saveEditStory, deleteLog, regenerateFromPlayer, rollbackToLog,
-          rewindLastRound, resetCurrentGame, regenerateLastResponse, searchMicroCues, toggleCompanionPOV,
-          addToInventory, openImageModal, confirmAndGenerateImage, removeImage, previewImage, generateAiSummary,
-          openDailyChatSetup, startNewDailyChat, resumeDailySession, deleteDailySession, submitDailyInput,
-          triggerDailyPendingMessage, rewindDailyRound, getCurrentStyleName, getPersonaName, getUserPersonaName,
-          getSelectedPersonaNames, getSessionCompanionsName
+          selectScript, togglePersonaSelection, confirmPersonaAndEnterGame, resumeSession, deleteSession,
+          chooseOption, submitCustomAction, triggerPendingAction, startEdit, cancelEdit, saveAndRegeneratePlayer,
+          saveEditStory, deleteLog, regenerateFromPlayer, rollbackToLog, rewindLastRound, resetCurrentGame,
+          regenerateLastResponse, searchMicroCues, toggleCompanionPOV, addToInventory, openImageModal,
+          confirmAndGenerateImage, removeImage, previewImage, generateAiSummary, openDailyChatSetup,
+          startNewDailyChat, resumeDailySession, deleteDailySession, submitDailyInput, triggerDailyPendingMessage,
+          rewindDailyRound, getCurrentStyleName, getPersonaName, getUserPersonaName,
+          applyPreset, saveAsNewPreset, deleteCurrentPreset, applyImgPreset, saveAsNewImgPreset, deleteCurrentImgPreset, fetchModelList
         };
       }
     }).mount('#app');
